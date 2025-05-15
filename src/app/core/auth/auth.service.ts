@@ -2,11 +2,11 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
-import { environment } from '../../../environments/environment'; 
+import { environment } from '../../../environments/environment';
 import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
     private _authenticated: boolean = false;
     private _httpClient = inject(HttpClient);
@@ -53,17 +53,17 @@ export class AuthService {
      *
      * @param credentials
      */
-    signIn(credentials: { email: string; password: string }): Observable<any> {
+    signIn(credentials: FormData): Observable<any> {
         console.log('Datos de inicio de sesión:', credentials);
-    
-        return this._httpClient.post(`${environment.baseUrl}/user/login`, credentials).pipe(
+
+        return this._httpClient.post(`${environment.baseUrl}/auth/login`, credentials).pipe(
             catchError((error) => {
                 console.error('Error de inicio de sesión:', error);
                 return throwError(error);
             }),
             switchMap((response: any) => {
                 console.log('Respuesta del backend:', response);
-    
+
                 // Almacena el token si existe
                 if (response.token) { // Aquí cambiamos accessToken por token
                     this.accessToken = response.token; // Almacenar el token correctamente
@@ -73,7 +73,7 @@ export class AuthService {
                 }
 
                 // Corregir la URL eliminando la duplicación de api/v1
-                return this._httpClient.get(`${environment.baseUrl}/user/${response.user.id}`).pipe(
+                return this._httpClient.get(`${environment.baseUrl}/users/${response.user_id}`).pipe(
                     switchMap((userData: any) => {
                         this._authenticated = true;
                         this._userService.user = userData;
@@ -93,9 +93,9 @@ export class AuthService {
             })
         );
     }
-    
-    
-        
+
+
+
 
     /**
      * Sign in using the access token
@@ -136,8 +136,8 @@ export class AuthService {
     signOut(): Observable<any> {
 
 
-         // Limpiar el usuario del servicio UserService
-         this._userService.user = null;
+        // Limpiar el usuario del servicio UserService
+        this._userService.user = null;
         // Remove the access token from the local storage
         localStorage.removeItem('accessToken');
 
@@ -153,17 +153,17 @@ export class AuthService {
      *
      * @param user
      */
-    signUp(user: { 
-        firstName: string; 
-        lastName: string; 
-        username: string; 
-        email: string; 
-        password: string; 
-        role: string; 
+    signUp(user: {
+        firstName: string;
+        lastName: string;
+        username: string;
+        email: string;
+        password: string;
+        role: string;
     }): Observable<any> {
         return this._httpClient.post(`${environment.baseUrl}/user`, user);
     }
-    
+
 
     /**
      * Unlock session
@@ -217,5 +217,5 @@ export class AuthService {
             return [];
         }
     }
-    
+
 }

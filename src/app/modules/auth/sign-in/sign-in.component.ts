@@ -15,10 +15,10 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
-    selector     : 'auth-sign-in',
-    templateUrl  : './sign-in.component.html',
+    selector: 'auth-sign-in',
+    templateUrl: './sign-in.component.html',
     encapsulation: ViewEncapsulation.None,
-    animations   : [
+    animations: [
         fuseAnimations,
         trigger('fadeIn', [
             transition(':enter', [
@@ -43,15 +43,14 @@ import { trigger, transition, style, animate } from '@angular/animations';
             ])
         ])
     ],
-    standalone   : true,
-    imports      : [RouterLink, FuseAlertComponent, NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatProgressSpinnerModule],
+    standalone: true,
+    imports: [RouterLink, FuseAlertComponent, NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatProgressSpinnerModule],
 })
-export class AuthSignInComponent implements OnInit
-{
+export class AuthSignInComponent implements OnInit {
     @ViewChild('signInNgForm') signInNgForm: NgForm;
 
     alert: { type: FuseAlertType; message: string } = {
-        type   : 'success',
+        type: 'success',
         message: '',
     };
     signInForm: FormGroup;
@@ -66,25 +65,23 @@ export class AuthSignInComponent implements OnInit
         private _authService: AuthService,
         private _formBuilder: FormBuilder,
         private _router: Router,
-    )
-    {
+    ) {
         // Crear el formulario sin valores iniciales
         this.signInForm = this._formBuilder.group({
-            email     : ['', [Validators.required, Validators.email]],
-            password  : ['', Validators.required],
+            username: ['', [Validators.required]],
+            password: ['', Validators.required],
             rememberMe: [false]
         });
     }
 
     // -----------------------------------------------------------------------------------------------------
-    // @ Lifecycle hooks 
+    // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
 
     /**
-     * On init 
+     * On init
      */
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
         // Puedes añadir lógica adicional aquí si es necesario
     }
 
@@ -95,11 +92,9 @@ export class AuthSignInComponent implements OnInit
     /**
      * Sign in
      */
-    signIn(): void
-    {
+    signIn(): void {
         // Return if the form is invalid
-        if (this.signInForm.invalid)
-        {
+        if (this.signInForm.invalid) {
             // Marcar todos los campos como tocados para mostrar errores
             Object.keys(this.signInForm.controls).forEach(key => {
                 const control = this.signInForm.get(key);
@@ -114,21 +109,22 @@ export class AuthSignInComponent implements OnInit
 
         // Hide the alert
         this.showAlert = false;
-        
+
+        const credentials = new FormData();
+        credentials.append('username', this.signInForm.value.username);
+        credentials.append('password', this.signInForm.value.password);
         // Sign in
-        this._authService.signIn(this.signInForm.value)
+        this._authService.signIn(credentials)
             .subscribe(
-                (response) =>
-                {
+                (response) => {
                     // Set the redirect url.
-                    localStorage.setItem('token', response.token); 
+                    localStorage.setItem('token', response.token);
                     const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') || '/signed-in-redirect';
-                    
+
                     // Navigate to the redirect url
                     this._router.navigate(['/apps/help-center']);
                 },
-                (response) =>
-                {
+                (response) => {
                     console.error('Error:', response);
                     // Re-enable the form
                     this.signInForm.enable();
@@ -138,7 +134,7 @@ export class AuthSignInComponent implements OnInit
                     if (response.status === 401) {
                         this.alert = {
                             type: 'error',
-                            message: 'Correo o contraseña incorrecta',
+                            message: 'Numero de celular o contraseña incorrecta',
                         };
                     } else {
                         this.alert = {

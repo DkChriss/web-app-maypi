@@ -25,31 +25,30 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { interval, Subscription } from 'rxjs';
 
 @Component({
-    selector     : 'classy-layout',
-    templateUrl  : './classy.component.html',
+    selector: 'classy-layout',
+    templateUrl: './classy.component.html',
     encapsulation: ViewEncapsulation.None,
-    standalone   : true,
-    imports      : [
-        FuseLoadingBarComponent, 
-        FuseVerticalNavigationComponent, 
-        NotificationsComponent, 
-        UserComponent, 
+    standalone: true,
+    imports: [
+        FuseLoadingBarComponent,
+        FuseVerticalNavigationComponent,
+        NotificationsComponent,
+        UserComponent,
         NgIf,
-        NgClass, 
-        MatIconModule, 
-        MatButtonModule, 
-        LanguagesComponent, 
-        FuseFullscreenComponent, 
-        SearchComponent, 
-        ShortcutsComponent, 
-        MessagesComponent, 
-        RouterOutlet, 
-        QuickChatComponent, 
+        NgClass,
+        MatIconModule,
+        MatButtonModule,
+        LanguagesComponent,
+        FuseFullscreenComponent,
+        SearchComponent,
+        ShortcutsComponent,
+        MessagesComponent,
+        RouterOutlet,
+        QuickChatComponent,
         SchemeComponent
     ],
 })
-export class ClassyLayoutComponent implements OnInit, OnDestroy
-{
+export class ClassyLayoutComponent implements OnInit, OnDestroy {
     isScreenSmall: boolean;
     navigation: Navigation;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
@@ -66,8 +65,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _fuseNavigationService: FuseNavigationService,
         private _httpClient: HttpClient,
-    )
-    {
+    ) {
         this.loadUserData();
         this.initializeTokenCheck();
     }
@@ -81,33 +79,33 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
             try {
                 const userData = JSON.parse(userString);
                 console.log('Datos completos del usuario:', userData);
-                
+
                 if (userData?.data) {
                     // Intentar obtener la imagen de diferentes propiedades posibles
                     let userImage = userData.data.imagen || userData.data.image || userData.data.photo;
                     console.log('Path original de la imagen:', userImage);
-                    
+
                     // Construir URL de la imagen
                     let avatarUrl = null;
                     if (userImage) {
                         // Limpiar la ruta de la imagen
                         userImage = userImage.replace(/^\/+/, ''); // Eliminar slashes iniciales
                         userImage = userImage.replace(/\/+/g, '/'); // Eliminar dobles slashes
-                        
+
                         // Construir URL completa
-                        avatarUrl = userImage.startsWith('http') ? 
-                            userImage : 
+                        avatarUrl = userImage.startsWith('http') ?
+                            userImage :
                             `${environment.baseUrl}/${userImage}`;
-                            
+
                         console.log('URL final de la imagen:', avatarUrl);
                     }
-                    
+
                     const nombres = userData.data.nombres || '';
                     const apellidos = userData.data.apellidos || '';
                     const primerNombre = nombres.split(' ')[0];
                     const primerApellido = apellidos.split(' ')[0];
                     const iniciales = this.getInitials(primerNombre, primerApellido);
-                    
+
                     this.user = {
                         id: userData.data.usuarios_id,
                         name: `${primerNombre} ${primerApellido}`.trim(),
@@ -116,7 +114,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
                         status: localStorage.getItem('userStatus') || 'online',
                         initials: iniciales
                     };
-                    
+
                     console.log('Objeto usuario configurado:', this.user);
                 }
             } catch (error) {
@@ -162,7 +160,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
         }
 
         console.log('Procesando path de imagen:', imagePath);
-        
+
         // Si ya es una URL completa, retornarla
         if (imagePath.startsWith('http')) {
             console.log('URL completa detectada:', imagePath);
@@ -173,7 +171,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
         const cleanPath = imagePath.replace(/^\/+/, '');
         const fullUrl = `${environment.baseUrl}/${cleanPath}`;
         console.log('URL construida:', fullUrl);
-        
+
         return fullUrl;
     }
 
@@ -184,8 +182,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
     /**
      * Getter for current year
      */
-    get currentYear(): number
-    {
+    get currentYear(): number {
         return new Date().getFullYear();
     }
 
@@ -222,7 +219,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
         // Subscribe to media changes
         this._fuseMediaWatcherService.onMediaChange$
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(({matchingAliases}) => {
+            .subscribe(({ matchingAliases }) => {
                 this.isScreenSmall = !matchingAliases.includes('md');
             });
 
@@ -237,7 +234,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
         // Remover los listeners
         window.removeEventListener('storage', () => this.loadUserData());
         window.removeEventListener('userDataUpdated', () => this.loadUserData());
-        
+
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next(null);
         this._unsubscribeAll.complete();
@@ -279,13 +276,13 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
      */
     private checkTokenAndUpdateUser(): void {
         const token = localStorage.getItem('accessToken');
-        
+
         if (!token) {
             this.handleInvalidToken();
             return;
         }
 
-        this._httpClient.get(`${environment.baseUrl}/api/users/me`, {
+        this._httpClient.get(`${environment.baseUrl}/users/me`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -339,7 +336,7 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy
         return fieldsToCompare.some(field => {
             const currentValue = currentData[field];
             const newValue = newData[field];
-            
+
             // Si los valores son diferentes, hay cambios
             if (currentValue !== newValue) {
                 console.log(`Cambio detectado en ${field}:`, {

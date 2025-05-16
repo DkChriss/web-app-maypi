@@ -1,16 +1,9 @@
 import { Routes } from '@angular/router';
 import { LandingHomeComponent } from 'app/modules/landing/home/home.component';
-import { ReportComponent } from 'app/modules/landing/home/report/report.component';
 
 export default [
-    {path: '', pathMatch : 'full', redirectTo: 'landing'},
-
     {
-        path     : 'landing',
+        path     : '',
         component: LandingHomeComponent,
     },
-    {
-        path     : 'report',
-        component: ReportComponent
-    }
 ] as Routes;

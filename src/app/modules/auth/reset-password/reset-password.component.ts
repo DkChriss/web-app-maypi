@@ -12,31 +12,12 @@ import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { FuseValidators } from '@fuse/validators';
 import { AuthService } from 'app/core/auth/auth.service';
 import { finalize } from 'rxjs';
-import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
     selector     : 'auth-reset-password',
     templateUrl  : './reset-password.component.html',
     encapsulation: ViewEncapsulation.None,
-    animations   : [
-        fuseAnimations,
-        trigger('fadeIn', [
-            transition(':enter', [
-                style({ opacity: 0 }),
-                animate('600ms ease-in', style({ opacity: 1 }))
-            ])
-        ]),
-        trigger('shake', [
-            transition('* => error', [
-                style({ transform: 'translateX(0)' }),
-                animate('100ms', style({ transform: 'translateX(-10px)' })),
-                animate('100ms', style({ transform: 'translateX(10px)' })),
-                animate('100ms', style({ transform: 'translateX(-10px)' })),
-                animate('100ms', style({ transform: 'translateX(10px)' })),
-                animate('100ms', style({ transform: 'translateX(0)' }))
-            ])
-        ])
-    ],
+    animations   : fuseAnimations,
     standalone   : true,
     imports      : [NgIf, FuseAlertComponent, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, RouterLink],
 })
@@ -91,7 +72,7 @@ export class AuthResetPasswordComponent implements OnInit
     resetPassword(): void
     {
         // Return if the form is invalid
-        if (this.resetPasswordForm.invalid)
+        if ( this.resetPasswordForm.invalid )
         {
             return;
         }
@@ -123,7 +104,7 @@ export class AuthResetPasswordComponent implements OnInit
                     // Set the alert
                     this.alert = {
                         type   : 'success',
-                        message: 'Tu contraseña ha sido restablecida correctamente.',
+                        message: 'Your password has been reset.',
                     };
                 },
                 (response) =>
@@ -131,7 +112,7 @@ export class AuthResetPasswordComponent implements OnInit
                     // Set the alert
                     this.alert = {
                         type   : 'error',
-                        message: 'Ocurrió un error, por favor intenta nuevamente.',
+                        message: 'Something went wrong, please try again.',
                     };
                 },
             );

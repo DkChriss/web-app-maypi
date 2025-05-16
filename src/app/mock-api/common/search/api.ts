@@ -5,10 +5,10 @@ import { contacts } from 'app/mock-api/apps/contacts/data';
 import { tasks } from 'app/mock-api/apps/tasks/data';
 import { defaultNavigation } from 'app/mock-api/common/navigation/data';
 import { cloneDeep } from 'lodash-es';
-import { jwtDecode } from 'jwt-decode'; // Importa jwt-decode
 
 @Injectable({providedIn: 'root'})
-export class SearchMockApi {
+export class SearchMockApi
+{
     private readonly _defaultNavigation: FuseNavigationItem[] = defaultNavigation;
     private readonly _contacts: any[] = contacts;
     private readonly _tasks: any[] = tasks;
@@ -19,7 +19,8 @@ export class SearchMockApi {
     constructor(
         private _fuseMockApiService: FuseMockApiService,
         private _fuseNavigationService: FuseNavigationService,
-    ) {
+    )
+    {
         // Register Mock API handlers
         this.registerHandlers();
     }
@@ -31,7 +32,8 @@ export class SearchMockApi {
     /**
      * Register Mock API handlers
      */
-    registerHandlers(): void {
+    registerHandlers(): void
+    {
         // Get the flat navigation and store it
         const flatNavigation = this._fuseNavigationService.getFlatNavigation(this._defaultNavigation);
 
@@ -40,29 +42,27 @@ export class SearchMockApi {
         // -----------------------------------------------------------------------------------------------------
         this._fuseMockApiService
             .onPost('api/common/search')
-            .reply(({request}) => {
+            .reply(({request}) =>
+            {
                 // Get the search query
                 const query = cloneDeep(request.body.query.toLowerCase());
 
                 // If the search query is an empty string,
                 // return an empty array
-                if (query === '') {
+                if ( query === '' )
+                {
                     return [200, {results: []}];
                 }
 
-                // Obtener roles del usuario
-                const userRoles = this._getUserRoles();
-
-                // Filtrar los resultados
+                // Filter the contacts
                 const contactsResults = cloneDeep(this._contacts)
                     .filter(contact => contact.name.toLowerCase().includes(query));
 
+                // Filter the navigation
                 const pagesResults = cloneDeep(flatNavigation)
-                    .filter(page => 
-                        (page.title?.toLowerCase().includes(query) || (page.subtitle && page.subtitle.includes(query)))
-                        && this._hasAccessToPage(page, userRoles) // Filtrar por roles
-                    );
+                    .filter(page => (page.title?.toLowerCase().includes(query) || (page.subtitle && page.subtitle.includes(query))));
 
+                // Filter the tasks
                 const tasksResults = cloneDeep(this._tasks)
                     .filter(task => task.title.toLowerCase().includes(query));
 
@@ -70,9 +70,11 @@ export class SearchMockApi {
                 const results = [];
 
                 // If there are contacts results...
-                if (contactsResults.length > 0) {
+                if ( contactsResults.length > 0 )
+                {
                     // Normalize the results
-                    contactsResults.forEach((result) => {
+                    contactsResults.forEach((result) =>
+                    {
                         // Add a link
                         result.link = '/apps/contacts/' + result.id;
 
@@ -89,9 +91,11 @@ export class SearchMockApi {
                 }
 
                 // If there are page results...
-                if (pagesResults.length > 0) {
+                if ( pagesResults.length > 0 )
+                {
                     // Normalize the results
-                    pagesResults.forEach((result: any) => {
+                    pagesResults.forEach((result: any) =>
+                    {
                         // Add the page title as the value
                         result.value = result.title;
                     });
@@ -105,9 +109,11 @@ export class SearchMockApi {
                 }
 
                 // If there are tasks results...
-                if (tasksResults.length > 0) {
+                if ( tasksResults.length > 0 )
+                {
                     // Normalize the results
-                    tasksResults.forEach((result) => {
+                    tasksResults.forEach((result) =>
+                    {
                         // Add a link
                         result.link = '/apps/tasks/' + result.id;
 
@@ -126,38 +132,5 @@ export class SearchMockApi {
                 // Return the response
                 return [200, results];
             });
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Private methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Decodifica el token JWT y extrae los roles del usuario
-     */
-    private _getUserRoles(): number[] {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            return []; // Retorna un arreglo vacío si no hay token
-        }
-
-        try {
-            const decoded: any = jwtDecode(token);
-            console.log('Decoded token:', decoded); // Para verificar la decodificación
-            return Array.isArray(decoded.role) ? decoded.role : [decoded.role];
-        } catch (error) {
-            console.error('Error al decodificar el token', error);
-            return []; // Retorna un arreglo vacío si hay un error al decodificar
-        }
-    }
-
-    /**
-     * Filtra los elementos de la página según los roles del usuario
-     */
-    private _hasAccessToPage(page: any, roles: number[]): boolean {
-        if (page.roles) {
-            return page.roles.some(role => roles.includes(role));
-        }
-        return true; // Si no tiene restricciones de roles, se incluye
     }
 }

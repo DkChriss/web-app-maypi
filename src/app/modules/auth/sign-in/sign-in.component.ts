@@ -11,51 +11,25 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { AuthService } from 'app/core/auth/auth.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
-    selector: 'auth-sign-in',
-    templateUrl: './sign-in.component.html',
+    selector     : 'auth-sign-in',
+    templateUrl  : './sign-in.component.html',
     encapsulation: ViewEncapsulation.None,
-    animations: [
-        fuseAnimations,
-        trigger('fadeIn', [
-            transition(':enter', [
-                style({ opacity: 0 }),
-                animate('600ms ease-in', style({ opacity: 1 }))
-            ])
-        ]),
-        trigger('slideIn', [
-            transition(':enter', [
-                style({ transform: 'translateY(20px)', opacity: 0 }),
-                animate('400ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
-            ])
-        ]),
-        trigger('shake', [
-            transition('* => error', [
-                style({ transform: 'translateX(0)' }),
-                animate('100ms', style({ transform: 'translateX(-10px)' })),
-                animate('100ms', style({ transform: 'translateX(10px)' })),
-                animate('100ms', style({ transform: 'translateX(-10px)' })),
-                animate('100ms', style({ transform: 'translateX(10px)' })),
-                animate('100ms', style({ transform: 'translateX(0)' }))
-            ])
-        ])
-    ],
-    standalone: true,
-    imports: [RouterLink, FuseAlertComponent, NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatProgressSpinnerModule],
+    animations   : fuseAnimations,
+    standalone   : true,
+    imports      : [RouterLink, FuseAlertComponent, NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatProgressSpinnerModule],
 })
-export class AuthSignInComponent implements OnInit {
+export class AuthSignInComponent implements OnInit
+{
     @ViewChild('signInNgForm') signInNgForm: NgForm;
 
     alert: { type: FuseAlertType; message: string } = {
-        type: 'success',
+        type   : 'success',
         message: '',
     };
-    signInForm: FormGroup;
+    signInForm: UntypedFormGroup;
     showAlert: boolean = false;
-    isLoading: boolean = false;
 
     /**
      * Constructor
@@ -63,15 +37,10 @@ export class AuthSignInComponent implements OnInit {
     constructor(
         private _activatedRoute: ActivatedRoute,
         private _authService: AuthService,
-        private _formBuilder: FormBuilder,
+        private _formBuilder: UntypedFormBuilder,
         private _router: Router,
-    ) {
-        // Crear el formulario sin valores iniciales
-        this.signInForm = this._formBuilder.group({
-            username: ['', [Validators.required]],
-            password: ['', Validators.required],
-            rememberMe: [false]
-        });
+    )
+    {
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -81,8 +50,14 @@ export class AuthSignInComponent implements OnInit {
     /**
      * On init
      */
-    ngOnInit(): void {
-        // Puedes añadir lógica adicional aquí si es necesario
+    ngOnInit(): void
+    {
+        // Create the form
+        this.signInForm = this._formBuilder.group({
+            email     : ['hughes.brian@company.com', [Validators.required, Validators.email]],
+            password  : ['admin', Validators.required],
+            rememberMe: [''],
+        });
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -92,56 +67,48 @@ export class AuthSignInComponent implements OnInit {
     /**
      * Sign in
      */
-    signIn(): void {
+    signIn(): void
+    {
         // Return if the form is invalid
-        if (this.signInForm.invalid) {
-            // Marcar todos los campos como tocados para mostrar errores
-            Object.keys(this.signInForm.controls).forEach(key => {
-                const control = this.signInForm.get(key);
-                control.markAsTouched();
-            });
+        if ( this.signInForm.invalid )
+        {
             return;
         }
 
         // Disable the form
         this.signInForm.disable();
-        this.isLoading = true;
 
         // Hide the alert
         this.showAlert = false;
 
-        const credentials = new FormData();
-        credentials.append('username', this.signInForm.value.username);
-        credentials.append('password', this.signInForm.value.password);
         // Sign in
-        this._authService.signIn(credentials)
+        this._authService.signIn(this.signInForm.value)
             .subscribe(
-                (response) => {
+                () =>
+                {
                     // Set the redirect url.
-                    localStorage.setItem('token', response.token);
+                    // The '/signed-in-redirect' is a dummy url to catch the request and redirect the user
+                    // to the correct page after a successful sign in. This way, that url can be set via
+                    // routing file and we don't have to touch here.
                     const redirectURL = this._activatedRoute.snapshot.queryParamMap.get('redirectURL') || '/signed-in-redirect';
 
                     // Navigate to the redirect url
-                    this._router.navigate(['/apps/help-center']);
+                    this._router.navigateByUrl(redirectURL);
+
                 },
-                (response) => {
-                    console.error('Error:', response);
+                (response) =>
+                {
                     // Re-enable the form
                     this.signInForm.enable();
-                    this.isLoading = false;
 
-                    // Establecer el mensaje de error
-                    if (response.status === 401) {
-                        this.alert = {
-                            type: 'error',
-                            message: 'Numero de celular o contraseña incorrecta',
-                        };
-                    } else {
-                        this.alert = {
-                            type: 'error',
-                            message: 'Error al iniciar sesión, vuelva a intentar',
-                        };
-                    }
+                    // Reset the form
+                    this.signInNgForm.resetForm();
+
+                    // Set the alert
+                    this.alert = {
+                        type   : 'error',
+                        message: 'Wrong email or password',
+                    };
 
                     // Show the alert
                     this.showAlert = true;

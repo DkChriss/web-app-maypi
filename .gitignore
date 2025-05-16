@@ -7,7 +7,6 @@
 # Only exists if Bazel was run
 /bazel-out
 
-frontend/src/environments/environment.ts
 # dependencies
 /node_modules
 
@@ -47,8 +46,5 @@ testem.log
 Thumbs.db
 
 #ENVIRONMENTS
-src/environments/environment.ts
-src/environments/environment.production.ts
 src/environments/environment.development.ts
-
-
+src/environments/environment.production.ts

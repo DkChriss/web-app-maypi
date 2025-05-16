@@ -103,14 +103,4 @@ export class UserComponent implements OnInit, OnDestroy
     {
         this._router.navigate(['/sign-out']);
     }
-
-    // Método para navegar al perfil
-    goToProfile(): void {
-        this._router.navigate(['/pages/settings']);
-    }
-
-    // Método para navegar a configuración
-    goToSettings(): void {
-        this._router.navigate(['/pages/settings']);
-    }
 }

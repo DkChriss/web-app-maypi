@@ -68,7 +68,7 @@ export class AuthSignInComponent implements OnInit {
     ) {
         // Crear el formulario sin valores iniciales
         this.signInForm = this._formBuilder.group({
-            email: ['', [Validators.required]],
+            phone: ['', [Validators.required]],
             password: ['', Validators.required],
             rememberMe: [false]
         });
@@ -112,7 +112,7 @@ export class AuthSignInComponent implements OnInit {
         this.showAlert = false;
 
         const credentials = new FormData();
-        credentials.set('username', this.signInForm.value.email);
+        credentials.set('username', this.signInForm.value.phone);
         credentials.set('password', this.signInForm.value.password);
         // Sign in
         this._authService.signIn(credentials)

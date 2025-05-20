@@ -33,24 +33,72 @@
                 <div class="grid" *ngIf="categoryList$ | async as categoryList">
                     <!-- Header -->
                     <div
-                        class="inventory-grid z-10 sticky top-0 grid gap-2 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5">
+                        class="inventory-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5">
                         <div>Título</div>
                         <div>Slug</div>
-                        <div>Título</div>
-                        <div>Slug</div>
+                        <div>Acciones</div>
                     </div>
 
                     <!-- Rows -->
                     <ng-container *ngFor="let category of categoryList.data; let i=index ">
-                        <div class="inventory-grid grid items-center gap-2 py-5 px-6 md:px-8 border-b">
+                        <div class="inventory-grid grid items-center gap-4 py-5 px-6 md:px-8 border-b">
                             <div class="truncate">{{category.title}}</div>
                             <div class="truncate">{{category.slug}}</div>
                             <!-- Details button -->
+                            <div>
+                                <button class="min-w-10 min-h-7 h-7 px-2 leading-6" mat-stroked-button
+                                    (click)="toggleDetails(category)">
+                                    <mat-icon class="icon-size-5"
+                                        [svgIcon]="selectedCategory?.id === category.id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
+                                </button>
+                            </div>
 
                         </div>
 
                         <!-- Expanded Details -->
+                        <div class="grid" *ngIf="selectedCategory?.id === category.id">
+                            <div class="shadow-lg overflow-hidden">
+                                <div class="flex border-b">
+                                    <form class="flex flex-col w-full" [formGroup]="categoryForm.formGroup">
+                                        <div class="flex flex-col sm:flex-row p-8">
+                                            <div class="flex flex-auto flex-wrap">
+                                                <!-- Category Details Form -->
+                                                <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
+                                                    <!-- Title -->
+                                                    <mat-form-field class="w-full">
+                                                        <mat-label>Título</mat-label>
+                                                        <input matInput formControlName="title">
+                                                    </mat-form-field>
 
+                                                    <!-- Slug -->
+                                                    <mat-form-field class="w-full">
+                                                        <mat-label>Slug</mat-label>
+                                                        <input matInput formControlName="slug">
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Actions -->
+                                        <div class="flex items-center justify-between w-full border-t px-8 py-4">
+                                            <button class="-ml-4" mat-button [color]="'warn'"
+                                                (click)="delete(category.id)">
+                                                Eliminar
+                                            </button>
+                                            <div class="flex items-center">
+                                                <button mat-stroked-button class="mr-2" (click)="cancelEdit()">
+                                                    Cancelar
+                                                </button>
+                                                <button mat-flat-button [color]="'primary'"
+                                                    (click)="update(category.id)" [disabled]="categoryForm.invalid">
+                                                    Actualizar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </ng-container>
                 </div>
             </ng-container>

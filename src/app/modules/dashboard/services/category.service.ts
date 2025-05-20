@@ -31,7 +31,7 @@ export class CategoryService {
     }
 
     show(id: number) {
-        return this._httpClient.get<number>(
+        return this._httpClient.get(
             `${environment.baseUrl}/categories/${id}`
         )
     }

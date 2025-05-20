@@ -16,6 +16,7 @@ import { FuseVerticalNavigationSpacerItemComponent } from '@fuse/components/navi
 import { FuseScrollbarDirective } from '@fuse/directives/scrollbar/scrollbar.directive';
 import { FuseUtilsService } from '@fuse/services/utils/utils.service';
 import { delay, filter, merge, ReplaySubject, Subject, Subscription, takeUntil } from 'rxjs';
+import { AuthService } from 'app/core/auth/auth.service';
 
 @Component({
     selector       : 'fuse-vertical-navigation',
@@ -81,6 +82,7 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
         private _scrollStrategyOptions: ScrollStrategyOptions,
         private _fuseNavigationService: FuseNavigationService,
         private _fuseUtilsService: FuseUtilsService,
+        private authService: AuthService,
     )
     {
         this._handleAsideOverlayClick = (): void =>
@@ -312,6 +314,13 @@ export class FuseVerticalNavigationComponent implements OnChanges, OnInit, After
         {
             this.name = this._fuseUtilsService.randomId();
         }
+
+            // Obtener los roles del usuario actual
+             const userRoles = this.authService.getUserRoles();
+
+            // Filtrar y almacenar la navegación según los roles del usuario
+           // this._fuseNavigationService.storeFilteredNavigation('main', defaultNavigation, userRoles);
+
 
         // Register the navigation component
         this._fuseNavigationService.registerComponent(this.name, this);

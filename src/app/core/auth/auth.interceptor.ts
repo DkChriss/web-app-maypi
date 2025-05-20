@@ -17,6 +17,10 @@ export const authInterceptor = (req: HttpRequest<unknown>, next: HttpHandlerFn):
     // Clone the request object
     let newReq = req.clone();
 
+    const token = localStorage.getItem('accessToken');
+    console.log('El token es:', token);
+
+
     // Request
     //
     // If the access token didn't expire, add the Authorization header.
@@ -42,7 +46,7 @@ export const authInterceptor = (req: HttpRequest<unknown>, next: HttpHandlerFn):
                 // Sign out
                 authService.signOut();
 
-                // Reload the app
+                // Reload the app inceptor que es 
                 location.reload();
             }
 

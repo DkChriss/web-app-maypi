@@ -83,7 +83,7 @@ export class CenteredLayoutComponent implements OnInit, OnDestroy
     }
 
     /**
-     * On destroy
+     * On destroy 
      */
     ngOnDestroy(): void
     {

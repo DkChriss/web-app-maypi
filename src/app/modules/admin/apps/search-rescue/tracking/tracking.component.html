@@ -1,0 +1,92 @@
+<div class="flex flex-col flex-auto min-w-0">
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <div class="max-w-full">
+            <!-- Título y descripción -->
+            <div class="text-3xl font-semibold tracking-tight leading-8">Seguimiento de Operaciones de Búsqueda</div>
+            <div class="mt-4">
+                <p class="text-lg text-secondary">
+                    Centro de control y monitoreo de operaciones de búsqueda y rescate en tiempo real.
+                    Coordine equipos, recursos y reciba actualizaciones instantáneas.
+                </p>
+            </div>
+
+<div class="tracking-container">
+    <!-- Sección de Búsqueda -->
+    <div class="search-section grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
+        <mat-form-field class="w-full col-span-1">
+            <mat-label>Código de Seguimiento</mat-label>
+            <input matInput [(ngModel)]="trackingCode" placeholder="Ingrese código" class="w-full">
+        </mat-form-field>
+
+        <mat-form-field class="w-full col-span-1">
+            <mat-label>Fecha Inicio</mat-label>
+            <input matInput [matDatepicker]="startPicker" [(ngModel)]="dateStart" class="w-full">
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field class="w-full col-span-1">
+            <mat-label>Fecha Fin</mat-label>
+            <input matInput [matDatepicker]="endPicker" [(ngModel)]="dateEnd" class="w-full">
+            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+
+        <div class="flex items-center justify-end col-span-1">
+            <button mat-raised-button color="primary" (click)="searchTracking()" class="w-full">
+                Buscar
+            </button>
+        </div>
+    </div>
+
+    <!-- Contenedor del Mapa con dimensiones específicas -->
+    <div class="map-wrapper">
+        <div #map class="tracking-map" style="width: 100%; height: 500px;"></div>
+    </div>
+
+    <!-- Lista de Ubicaciones -->
+    <div class="locations-list">
+        <table mat-table [dataSource]="displayedLocations">
+            <ng-container matColumnDef="timestamp">
+                <th mat-header-cell *matHeaderCellDef>Hora</th>
+                <td mat-cell *matCellDef="let location">
+                    {{location.timestamp | date:'medium'}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="coordinates">
+                <th mat-header-cell *matHeaderCellDef>Coordenadas</th>
+                <td mat-cell *matCellDef="let location">
+                    {{location.latitude}}, {{location.longitude}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                <td mat-cell *matCellDef="let location">
+                    {{location.description || 'Sin descripción'}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                <td mat-cell *matCellDef="let location">
+                    <button mat-icon-button (click)="selectLocation(location)">
+                        <mat-icon>location_on</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="['timestamp', 'coordinates', 'description', 'actions']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['timestamp', 'coordinates', 'description', 'actions']"></tr>
+        </table>
+
+        <mat-paginator 
+            [length]="locations.length"
+            [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 25, 100]"
+            (page)="onPageChange($event)">
+        </mat-paginator>
+    </div>
+</div> 

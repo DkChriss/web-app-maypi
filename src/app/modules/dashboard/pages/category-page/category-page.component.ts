@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,8 +12,9 @@ import { MatTableModule } from '@angular/material/table';
 import { QuillModule } from 'ngx-quill';
 import { CategoryService } from '../../services/category.service';
 import { BehaviorSubject, combineLatest, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs';
-import { Category, CategoryUpdate } from '../../models/category';
+import { Category, CategoryStore, CategoryUpdate } from '../../models/category';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-category-page',
@@ -30,25 +31,25 @@ import { FuseConfirmationService } from '@fuse/services/confirmation';
         MatPaginatorModule,
         MatSelectModule,
         QuillModule,
-        MatCardModule
-
+        MatCardModule,
+        MatDialogModule,
     ],
     templateUrl: './category-page.component.html',
     styleUrl: './category-page.component.scss'
 })
 export class CategoryPageComponent implements OnInit, OnDestroy {
+    configForm: UntypedFormGroup;
 
     isLoading = false;
     isEditMode = false;
     selectedCategory: Category | null = null
-
+    method = 'store'
     categoryForm = {
         submitted: false,
         submitting: false,
         formGroup: new FormGroup({
-            id: new FormControl<number>(null),
-            title: new FormControl('', Validators.required),
-            slug: new FormControl('', Validators.required)
+            title: new FormControl<string>('', Validators.required),
+            slug: new FormControl<string>('', Validators.required)
         })
     }
 
@@ -72,6 +73,8 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
             parseInt(this.pageSize$.value.toString())
         ).pipe(
             tap((res: any) => {
+                this.totalItems = res.total
+
                 this.isLoading = false
             })
         ))
@@ -80,26 +83,75 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
     constructor(
         private _categoryService: CategoryService,
         private _fuseConfirmationService: FuseConfirmationService,
+        private _formBuilder: UntypedFormBuilder,
     ) { }
 
     ngOnInit(): void {
         this.isLoading = false
+        this.configForm = this._formBuilder.group({
+            title: 'Remove contact',
+            message: 'Are you sure you want to remove this contact permanently? <span class="font-medium">This action cannot be undone!</span>',
+            icon: this._formBuilder.group({
+                show: true,
+                name: 'heroicons_outline:exclamation-triangle',
+                color: 'warn',
+            }),
+            actions: this._formBuilder.group({
+                confirm: this._formBuilder.group({
+                    show: true,
+                    label: 'Remove',
+                    color: 'warn',
+                }),
+                cancel: this._formBuilder.group({
+                    show: true,
+                    label: 'Cancel',
+                }),
+            }),
+            dismissible: false,
+        });
     }
 
     ngOnDestroy(): void {
 
     }
 
+    openStore(): void {
+        this.categoryForm.formGroup.reset()
+        this.closeDetails()
+        this.isEditMode = true;
+        let newCategory: Category = { id: 1, title: 'nombre', slug: 'slug' }
+        this.method = 'store'
+        this.selectedCategory = newCategory
+    }
+
+    store(): void {
+        this.categoryForm.submitted = true
+        if (this.categoryForm.formGroup.valid) {
+            this.categoryForm.submitting = true
+            const newCategory: CategoryStore = this.categoryForm.formGroup.getRawValue()
+            this._categoryService.store(newCategory).subscribe({
+                next: (resp: any) => {
+                    this.categoryTable.reload.next();
+                    this.closeDetails();
+                },
+                error: (error) => {
+                    console.log(error)
+                }
+            })
+        }
+    }
+
     toggleDetails(category: Category): void {
+        this.isEditMode = !this.isEditMode
         if (this.selectedCategory?.id == category.id) {
             this.selectedCategory = null
         } else {
             this.selectedCategory = category
             this._categoryService.show(category.id).subscribe({
                 next: (resp: any) => {
+                    this.method = 'update'
                     this.isEditMode = true;
                     this.categoryForm.formGroup.patchValue({
-                        id: resp.data.id,
                         title: resp.data.title,
                         slug: resp.data.slug
                     }, { emitEvent: false })
@@ -113,13 +165,14 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
 
     closeDetails(): void {
         this.selectedCategory = null
+        this.isEditMode = false
     }
 
     update(id: number): void {
         this.categoryForm.submitted = true
         if (this.categoryForm.formGroup.valid) {
             this.categoryForm.submitting = true;
-            let categoryUpdate: CategoryUpdate = this.categoryForm.formGroup.value;
+            let categoryUpdate: CategoryUpdate = this.categoryForm.formGroup.getRawValue();
             this._categoryService.update(id, categoryUpdate).subscribe({
                 next: (resp: any) => {
                     this.categoryTable.reload.next()
@@ -135,7 +188,6 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
     cancelEdit() {
         if (this.selectedCategory) {
             this.categoryForm.formGroup.patchValue({
-                id: this.selectedCategory.id,
                 title: this.selectedCategory.title,
                 slug: this.selectedCategory.slug
             }, { emitEvent: false })
@@ -145,28 +197,13 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
 
     delete(id: number): void {
         if (id) {
-            const dialogRef = this._fuseConfirmationService.open({
-                title: 'Eliminar elemento',
-                message: '¿Estás segura de que deseas eliminar este elemento?',
-                icon: {
-                    show: true,
-                    name: 'heroicons_outline:trash',
-                    color: 'warn',
-                },
-                actions: {
-                    confirm: {
-                        show: true,
-                        label: 'Sí, eliminar',
-                        color: 'warn',
-                    },
-                    cancel: {
-                        show: true,
-                        label: 'Cancelar',
-                    },
-                },
-                dismissible: false,
-            });
+            // Open the dialog and save the reference of it
+            const dialogRef = this._fuseConfirmationService.open(this.configForm.value);
 
+            // Subscribe to afterClosed from the dialog reference
+            dialogRef.afterClosed().subscribe((result) => {
+                console.log(result);
+            });
         }
     }
 

@@ -18,7 +18,7 @@
             </mat-form-field>
 
             <!-- Add FAQ button -->
-            <button class="ml-4" mat-flat-button [color]="'primary'">
+            <button class="ml-4" mat-flat-button [color]="'primary'" (click)="openStore()">
                 <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
                 <span class="ml-2 mr-1">Registrar Categoria</span>
             </button>
@@ -29,8 +29,8 @@
     <div class="flex flex-auto overflow-hidden">
         <!-- FAQs list -->
         <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
-            <ng-container *ngIf="true">
-                <div class="grid" *ngIf="categoryList$ | async as categoryList">
+            <div class="grid" *ngIf="categoryList$ | async as categoryList">
+                <ng-container *ngIf="totalItems > 0; else noCategories">
                     <!-- Header -->
                     <div
                         class="inventory-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5">
@@ -54,7 +54,6 @@
                             </div>
 
                         </div>
-
                         <!-- Expanded Details -->
                         <div class="grid" *ngIf="selectedCategory?.id === category.id">
                             <div class="shadow-lg overflow-hidden">
@@ -82,16 +81,20 @@
                                         <!-- Actions -->
                                         <div class="flex items-center justify-between w-full border-t px-8 py-4">
                                             <button class="-ml-4" mat-button [color]="'warn'"
-                                                (click)="delete(category.id)">
+                                                *ngIf="method == 'update' " (click)="delete(category.id)">
                                                 Eliminar
                                             </button>
                                             <div class="flex items-center">
                                                 <button mat-stroked-button class="mr-2" (click)="cancelEdit()">
                                                     Cancelar
                                                 </button>
-                                                <button mat-flat-button [color]="'primary'"
+                                                <button mat-flat-button [color]="'primary'" *ngIf="method == 'update' "
                                                     (click)="update(category.id)" [disabled]="categoryForm.invalid">
                                                     Actualizar
+                                                </button>
+                                                <button mat-flat-button [color]="'primary'" *ngIf="method == 'store' "
+                                                    (click)="store()" [disabled]="categoryForm.invalid">
+                                                    Registrar
                                                 </button>
                                             </div>
                                         </div>
@@ -100,14 +103,53 @@
                             </div>
                         </div>
                     </ng-container>
-                </div>
-            </ng-container>
+                </ng-container>
+                <!-- No FAQs Template -->
+                <ng-template #noCategories>
+                    <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
+                        ¡No hay categorias registradas!, por favor registre la primera categoria
+                    </div>
+                    <div class="grid">
+                        <div class="shadow-lg overflow-hidden">
+                            <div class="flex border-b">
+                                <form class="flex flex-col w-full" [formGroup]="categoryForm.formGroup">
+                                    <div class="flex flex-col sm:flex-row p-8">
+                                        <div class="flex flex-auto flex-wrap">
+                                            <!-- Category Details Form -->
+                                            <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
+                                                <!-- Title -->
+                                                <mat-form-field class="w-full">
+                                                    <mat-label>Título</mat-label>
+                                                    <input matInput formControlName="title">
+                                                </mat-form-field>
 
-            <!-- No FAQs Template -->
-            <ng-template #noFaqs>
-                <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">¡No hay Preguntas
-                    Frecuentes!</div>
-            </ng-template>
+                                                <!-- Slug -->
+                                                <mat-form-field class="w-full">
+                                                    <mat-label>Slug</mat-label>
+                                                    <input matInput formControlName="slug">
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Actions -->
+                                    <div class="flex items-center justify-between w-full border-t px-8 py-4">
+                                        <div class="flex items-center">
+                                            <button mat-stroked-button class="mr-2" (click)="cancelEdit()">
+                                                Cancelar
+                                            </button>
+                                            <button mat-flat-button [color]="'primary'" *ngIf="method == 'store' "
+                                                (click)="store()" [disabled]="categoryForm.invalid">
+                                                Registrar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </div>
         </div>
     </div>
 

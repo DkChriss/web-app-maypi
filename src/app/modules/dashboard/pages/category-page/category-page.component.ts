@@ -60,6 +60,7 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
     pageSize$ = new BehaviorSubject<number>(10);
     pageNumber$ = new BehaviorSubject<number>(1);
     totalItems = 0
+    categories: any
 
     categoryList$ = combineLatest([
         this.pageSize$,
@@ -74,7 +75,7 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
         ).pipe(
             tap((res: any) => {
                 this.totalItems = res.total
-
+                this.categories = res.data
                 this.isLoading = false
             })
         ))
@@ -89,8 +90,8 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.isLoading = false
         this.configForm = this._formBuilder.group({
-            title: 'Remove contact',
-            message: 'Are you sure you want to remove this contact permanently? <span class="font-medium">This action cannot be undone!</span>',
+            title: 'Eliminar la categoria',
+            message: 'Esta seguro de eliminar la categoria? <span class="font-medium">Esta accion no puede ser reversible!</span>',
             icon: this._formBuilder.group({
                 show: true,
                 name: 'heroicons_outline:exclamation-triangle',
@@ -99,12 +100,12 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
             actions: this._formBuilder.group({
                 confirm: this._formBuilder.group({
                     show: true,
-                    label: 'Remove',
+                    label: 'Eliminar',
                     color: 'warn',
                 }),
                 cancel: this._formBuilder.group({
                     show: true,
-                    label: 'Cancel',
+                    label: 'Cancelar',
                 }),
             }),
             dismissible: false,
@@ -119,7 +120,7 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
         this.categoryForm.formGroup.reset()
         this.closeDetails()
         this.isEditMode = true;
-        let newCategory: Category = { id: 1, title: 'nombre', slug: 'slug' }
+        let newCategory: Category = { id: this.categories[0]["id"], title: 'nombre', slug: 'slug' }
         this.method = 'store'
         this.selectedCategory = newCategory
     }
@@ -202,7 +203,16 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
 
             // Subscribe to afterClosed from the dialog reference
             dialogRef.afterClosed().subscribe((result) => {
-                console.log(result);
+                if (result == 'confirmed') {
+                    this._categoryService.delete(id).subscribe({
+                        next: (resp) => {
+                            this.categoryTable.reload.next()
+                            this.method = this.totalItems === 0 ? "store" : "update"
+                        }, error: (error) => {
+                            console.log(error)
+                        }
+                    })
+                }
             });
         }
     }

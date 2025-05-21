@@ -19,7 +19,7 @@ export class UserService {
      *
      * @param value
      */
-    set user(value: User) {
+    set user(value: any) {
         // Store the value
         this._user.next(value);
     }

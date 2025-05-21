@@ -21,11 +21,11 @@ export class NavigationMockApi {
 
     registerHandlers(): void {
         this._fuseMockApiService.onGet('api/common/navigation').reply(() => {
-            console.log('Obteniendo la navegación desde el API Mock.');
+            //console.log('Obteniendo la navegación desde el API Mock.');
 
             // Obtener los roles del usuario
             const userRoles = this._getUserRoles();
-            console.log('Roles del usuario obtenidos:', userRoles);
+            //console.log('Roles del usuario obtenidos:', userRoles);
 
             // Asignar datos según el rol del usuario
             this._setNavigationDataBasedOnRole(userRoles[0]);
@@ -38,7 +38,7 @@ export class NavigationMockApi {
                 horizontal: cloneDeep(this._horizontalNavigation),
             };
 
-            console.log('Respuesta final de la API Mock:', response);
+            //console.log('Respuesta final de la API Mock:', response);
 
             return [200, response];
         });
@@ -46,7 +46,7 @@ export class NavigationMockApi {
 
     private _getUserRoles(): number[] {
         const token = localStorage.getItem('token');
-        console.log('Token en localStorage:', token);
+        //console.log('Token en localStorage:', token);
         if (!token) {
             console.error('No se encontró el token en localStorage');
             return [];
@@ -54,7 +54,7 @@ export class NavigationMockApi {
 
         try {
             const decoded: any = jwtDecode(token);
-            console.log('Decoded token:', decoded);
+            //console.log('Decoded token:', decoded);
             return decoded.role ? [parseInt(decoded.role, 10)] : [];
         } catch (error) {
             console.error('Error al decodificar el token', error);

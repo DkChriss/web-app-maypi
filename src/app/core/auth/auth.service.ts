@@ -76,17 +76,18 @@ export class AuthService {
                 return this._httpClient.get(`${environment.baseUrl}/users/${response.user.id}`).pipe(
                     switchMap((userData: any) => {
                         this._authenticated = true;
-                        this._userService.user = userData;
+                        this._userService.user = userData.data
+
 
                         // Siempre actualizar el localStorage con los datos más recientes
                         localStorage.removeItem('user'); // Eliminar datos antiguos
-                        localStorage.setItem('user', JSON.stringify(userData)); // Guardar datos nuevos
+                        localStorage.setItem('user', JSON.stringify(userData.data)); // Guardar datos nuevos
 
-                        console.log('Datos de usuario actualizados en localStorage:', userData);
+                        console.log('Datos de usuario actualizados en localStorage:', JSON.parse(JSON.stringify(userData.data)));
 
                         return of({
                             ...response,
-                            user: userData
+                            user: userData.data
                         });
                     })
                 );

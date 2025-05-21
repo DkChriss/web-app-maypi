@@ -198,10 +198,8 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
 
     delete(id: number): void {
         if (id) {
-            // Open the dialog and save the reference of it
             const dialogRef = this._fuseConfirmationService.open(this.configForm.value);
 
-            // Subscribe to afterClosed from the dialog reference
             dialogRef.afterClosed().subscribe((result) => {
                 if (result == 'confirmed') {
                     this._categoryService.delete(id).subscribe({

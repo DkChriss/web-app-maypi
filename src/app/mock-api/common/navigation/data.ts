@@ -205,6 +205,14 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 roles: [2],
                 exactMatch: true,
             },
+            {
+                id: 'apps.help-center.home',
+                title: 'Guias',
+                type: 'basic',
+                link: '/dashboards/guides',
+                roles: [2],
+                exactMatch: true,
+            },
         ]
 
     }

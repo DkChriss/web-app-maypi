@@ -1,12 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'environments/environment.development';
-import { CategoryStore, CategoryUpdate } from '../models/category';
+import { GuideStore, GuideUpdate } from '../models/guide';
 
 @Injectable({
     providedIn: 'root'
 })
-export class CategoryService {
+export class GuideService {
 
     constructor(
         private _httpClient: HttpClient
@@ -18,35 +18,34 @@ export class CategoryService {
             .set("size", size)
 
         return this._httpClient.get(
-            `${environment.baseUrl}/categories`,
+            `${environment.baseUrl}/guides`,
             { params }
         )
     }
 
-    store(categoryStore: CategoryStore) {
-        return this._httpClient.post<CategoryStore>(
-            `${environment.baseUrl}/categories`,
-            categoryStore
+    store(guideStore: GuideStore) {
+        return this._httpClient.post<GuideStore>(
+            `${environment.baseUrl}/guides`,
+            guideStore
         )
     }
 
     show(id: number) {
         return this._httpClient.get(
-            `${environment.baseUrl}/categories/${id}`
+            `${environment.baseUrl}/guides/${id}`,
         )
     }
 
-    update(id: number, categoryUpdate: CategoryUpdate) {
-        return this._httpClient.put<CategoryUpdate>(
-            `${environment.baseUrl}/categories/${id}`,
-            categoryUpdate
+    update(id: number, guideUpdate: GuideUpdate) {
+        return this._httpClient.put<GuideUpdate>(
+            `${environment.baseUrl}/guides/${id}`,
+            guideUpdate
         )
     }
 
     delete(id: number) {
         return this._httpClient.delete<number>(
-            `${environment.baseUrl}/categories/${id}`
+            `${environment.baseUrl}/guides/${id}`
         )
     }
-
 }

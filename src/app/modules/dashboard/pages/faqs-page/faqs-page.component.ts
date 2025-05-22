@@ -11,14 +11,14 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelect, MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { QuillModule } from 'ngx-quill';
-import { GuideService } from '../../services/guide.service';
-import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { Guide, GuideStore, GuideUpdate } from '../../models/guide';
 import { BehaviorSubject, combineLatest, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs';
+import { FaqService } from '../../services/faq.service';
+import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { CategoryService } from '../../services/category.service';
+import { Faq, FaqStore, FaqUpdate } from '../../models/faq';
 
 @Component({
-    selector: 'app-guide-page',
+    selector: 'app-faqs-page',
     standalone: true,
     imports: [
         CommonModule,
@@ -35,58 +35,56 @@ import { CategoryService } from '../../services/category.service';
         MatCardModule,
         MatDialogModule,
     ],
-    templateUrl: './guide-page.component.html',
-    styleUrl: './guide-page.component.scss'
+    templateUrl: './faqs-page.component.html',
+    styleUrl: './faqs-page.component.scss'
 })
-export class GuidePageComponent implements OnInit, OnDestroy {
+export class FaqsPageComponent implements OnInit, OnDestroy {
     @ViewChild('select_1', { static: false }) select_1: MatSelect;
 
     configForm: UntypedFormGroup;
     current_user: any = JSON.parse(localStorage.getItem('user') || '{}');
     isLoading = false;
     isEditMode = false;
-    selectedGuide: Guide | null = null
+    selectFaq: Faq | null = null
     method = 'store'
-    guideForm = {
+    faqForm = {
         submitted: false,
         submitting: false,
         formGroup: new FormGroup({
             user_id: new FormControl<number>(this.current_user.id),
             category_id: new FormControl<number>(null, Validators.required),
-            slug: new FormControl<string>('', Validators.required),
-            title: new FormControl<string>('', Validators.required),
-            subtitle: new FormControl<string>('', Validators.required),
-            content: new FormControl<string>('', Validators.required)
+            question: new FormControl<string>('', Validators.required),
+            answer: new FormControl<string>('', Validators.required),
         })
     }
 
-    guideTable = {
+    faqTable = {
         reload: new BehaviorSubject<void>(null)
     }
 
     pageSize$ = new BehaviorSubject<number>(10);
     pageNumber$ = new BehaviorSubject<number>(1);
     totalItems = 0
-    guides: any
+    faqs: any
 
     //CATEGORIES
     pageSizeCategorySelect$ = new BehaviorSubject<number>(10)
     pageNumberCategorySelect$ = new BehaviorSubject<number>(1)
 
-    guideList$ = combineLatest([
+    faqList$ = combineLatest([
         this.pageSize$,
         this.pageNumber$,
-        this.guideTable.reload
+        this.faqTable.reload
     ]).pipe(
         debounceTime(300),
         distinctUntilChanged(),
-        switchMap(() => this._guideService.list(
+        switchMap(() => this._faqService.list(
             parseInt(this.pageNumber$.value.toString()),
             parseInt(this.pageSize$.value.toString())
         ).pipe(
             tap((res: any) => {
                 this.totalItems = res.total
-                this.guides = res.data
+                this.faqs = res.data
                 this.isLoading = false
             })
         ))
@@ -126,7 +124,7 @@ export class GuidePageComponent implements OnInit, OnDestroy {
 
     constructor(
         private _categoryService: CategoryService,
-        private _guideService: GuideService,
+        private _faqService: FaqService,
         private _fuseConfirmationService: FuseConfirmationService,
         private _formBuilder: UntypedFormBuilder
     ) { }
@@ -135,8 +133,8 @@ export class GuidePageComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.isLoading = false
         this.configForm = this._formBuilder.group({
-            title: 'Eliminar la guia',
-            message: 'Esta seguro de eliminar la guia? <span class="font-medium">Esta accion no puede ser reversible!</span>',
+            title: 'Eliminar la pregunta frecuente',
+            message: 'Esta seguro de eliminar la pregunta frecuente? <span class="font-medium">Esta accion no puede ser reversible!</span>',
             icon: this._formBuilder.group({
                 show: true,
                 name: 'heroicons_outline:exclamation-triangle',
@@ -162,31 +160,29 @@ export class GuidePageComponent implements OnInit, OnDestroy {
     }
 
     openStore(): void {
-        this.guideForm.formGroup.reset()
+        this.faqForm.formGroup.reset()
         this.closeDetails()
         this.isEditMode = true;
-        let newGuide: Guide = {
-            id: this.guides[0]["id"],
+        let newFaq: Faq = {
+            id: this.faqs[0]["id"],
             user_id: 1,
             category_id: 1,
-            slug: 'slug',
-            title: 'title',
-            subtitle: 'subtitle',
-            content: 'content'
+            question: 'slug',
+            answer: 'title'
         }
         this.method = 'store'
-        this.selectedGuide = newGuide
+        this.selectFaq = newFaq
     }
 
     store(): void {
-        this.guideForm.submitted = true
-        if (this.guideForm.formGroup.valid) {
-            this.guideForm.submitting = true
-            const newGuide: GuideStore = this.guideForm.formGroup.getRawValue()
-            newGuide.user_id = this.current_user.id
-            this._guideService.store(newGuide).subscribe({
+        this.faqForm.submitted = true
+        if (this.faqForm.formGroup.valid) {
+            this.faqForm.submitting = true
+            const newFaq: FaqStore = this.faqForm.formGroup.getRawValue()
+            newFaq.user_id = this.current_user.id
+            this._faqService.store(newFaq).subscribe({
                 next: (resp: any) => {
-                    this.guideTable.reload.next();
+                    this.faqTable.reload.next();
                     this.closeDetails()
                 },
                 error: (error) => {
@@ -196,23 +192,21 @@ export class GuidePageComponent implements OnInit, OnDestroy {
         }
     }
 
-    toggleDetails(guide: Guide): void {
+    toggleDetails(faq: Faq): void {
         this.isEditMode = !this.isEditMode
-        if (this.selectedGuide?.id == guide.id) {
-            this.selectedGuide = null
+        if (this.selectFaq?.id == faq.id) {
+            this.selectFaq = null
         } else {
-            this.selectedGuide = guide
-            this._guideService.show(guide.id).subscribe({
+            this.selectFaq = faq
+            this._faqService.show(faq.id).subscribe({
                 next: (resp: any) => {
                     this.method = 'update'
                     this.isEditMode = true;
-                    this.guideForm.formGroup.patchValue({
+                    this.faqForm.formGroup.patchValue({
                         user_id: resp.data.user_id,
                         category_id: resp.data.category.id,
-                        slug: resp.data.slug,
-                        title: resp.data.title,
-                        subtitle: resp.data.subtitle,
-                        content: resp.data.content
+                        question: resp.data.question,
+                        answer: resp.data.answer
 
                     }, { emitEvent: false })
                 },
@@ -224,19 +218,19 @@ export class GuidePageComponent implements OnInit, OnDestroy {
     }
 
     closeDetails(): void {
-        this.selectedGuide = null
+        this.selectFaq = null
         this.isEditMode = false
     }
 
     update(id: number): void {
-        this.guideForm.submitted = true
-        if (this.guideForm.formGroup.valid) {
-            this.guideForm.submitting = true;
-            const guideUpdate: GuideUpdate = this.guideForm.formGroup.getRawValue()
-            guideUpdate.user_id = this.current_user.id
-            this._guideService.update(id, guideUpdate).subscribe({
+        this.faqForm.submitted = true
+        if (this.faqForm.formGroup.valid) {
+            this.faqForm.submitting = true;
+            const faqUpdate: FaqUpdate = this.faqForm.formGroup.getRawValue()
+            faqUpdate.user_id = this.current_user.id
+            this._faqService.update(id, faqUpdate).subscribe({
                 next: (resp: any) => {
-                    this.guideTable.reload.next();
+                    this.faqTable.reload.next();
                     this.closeDetails();
                 },
                 error: (error) => {
@@ -247,14 +241,12 @@ export class GuidePageComponent implements OnInit, OnDestroy {
     }
 
     cancelEdit() {
-        if (this.selectedGuide) {
-            this.guideForm.formGroup.patchValue({
-                user_id: this.selectedGuide.user_id,
-                category_id: this.selectedGuide.category_id,
-                slug: this.selectedGuide.slug,
-                title: this.selectedGuide.title,
-                subtitle: this.selectedGuide.subtitle,
-                content: this.selectedGuide.content
+        if (this.selectFaq) {
+            this.faqForm.formGroup.patchValue({
+                user_id: this.selectFaq.user_id,
+                category_id: this.selectFaq.category_id,
+                question: this.selectFaq.question,
+                answer: this.selectFaq.answer,
 
             }, { emitEvent: false })
         }
@@ -267,9 +259,9 @@ export class GuidePageComponent implements OnInit, OnDestroy {
 
             dialogRef.afterClosed().subscribe((result) => {
                 if (result == 'confirmed') {
-                    this._guideService.delete(id).subscribe({
+                    this._faqService.delete(id).subscribe({
                         next: (resp) => {
-                            this.guideTable.reload.next()
+                            this.faqTable.reload.next()
                             this.method = this.totalItems === 0 ? "store" : "update"
                         }, error: (error) => {
                             console.log(error)
@@ -297,6 +289,4 @@ export class GuidePageComponent implements OnInit, OnDestroy {
             );
         }
     }
-
-
 }

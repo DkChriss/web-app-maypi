@@ -17,7 +17,7 @@
                 <input matInput [formControl]="" [autocomplete]="'off'" [placeholder]="'Buscar Categorias'">
             </mat-form-field>
 
-            <!-- Add FAQ button -->
+            <!-- Add Categories button -->
             <button class="ml-4" mat-flat-button [color]="'primary'" (click)="openStore()">
                 <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
                 <span class="ml-2 mr-1">Registrar Categoria</span>
@@ -27,7 +27,7 @@
 
     <!-- Main -->
     <div class="flex flex-auto overflow-hidden">
-        <!-- FAQs list -->
+        <!-- Categories list -->
         <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
             <div class="grid" *ngIf="categoryList$ | async as categoryList">
                 <ng-container *ngIf="totalItems > 0; else noCategories">
@@ -104,7 +104,7 @@
                         </div>
                     </ng-container>
                 </ng-container>
-                <!-- No FAQs Template -->
+                <!-- No Categories Template -->
                 <ng-template #noCategories>
                     <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
                         ¡No hay categorias registradas!, por favor registre la primera categoria

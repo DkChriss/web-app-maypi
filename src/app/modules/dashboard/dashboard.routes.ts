@@ -3,6 +3,7 @@ import { CategoryPageComponent } from "./pages/category-page/category-page.compo
 import { GuidePageComponent } from "./pages/guide-page/guide-page.component";
 import { FaqsPageComponent } from "./pages/faqs-page/faqs-page.component";
 import { ContactSupportPageComponent } from "./pages/contact-support-page/contact-support-page.component";
+import { DevicePageComponent } from "./pages/device-page/device-page.component";
 
 export default [
     {
@@ -20,5 +21,9 @@ export default [
     {
         path: 'contacts-support',
         component: ContactSupportPageComponent
+    },
+    {
+        path: 'devices',
+        component: DevicePageComponent
     }
 ] as Routes

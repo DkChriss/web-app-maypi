@@ -229,6 +229,14 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 roles: [2],
                 exactMatch: true,
             },
+            {
+                id: 'apps.help-center.home',
+                title: 'Dispositivos',
+                type: 'basic',
+                link: '/dashboards/devices',
+                roles: [2],
+                exactMatch: true,
+            },
         ]
 
     }

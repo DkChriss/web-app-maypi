@@ -7,72 +7,81 @@
             <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
         </div>
         <!-- Title -->
-        <div class="text-4xl font-extrabold tracking-tight">Categorias</div>
+        <div class="text-4xl font-extrabold tracking-tight">Contactos de emergencia</div>
 
         <!-- Actions -->
         <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
             <!-- Search -->
             <mat-form-field class="fuse-mat-dense fuse-mat-rounded min-w-64" [subscriptSizing]="'dynamic'">
                 <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:magnifying-glass'"></mat-icon>
-                <input matInput [formControl]="" [autocomplete]="'off'" [placeholder]="'Buscar Categorias'">
+                <input matInput [formControl]="" [autocomplete]="'off'" [placeholder]="'Buscar contacto de emergencia'">
             </mat-form-field>
 
-            <!-- Add Categories button -->
+            <!-- Add Emergency Contacts button -->
             <button class="ml-4" mat-flat-button [color]="'primary'" (click)="openStore()">
                 <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                <span class="ml-2 mr-1">Registrar Categoria</span>
+                <span class="ml-2 mr-1">Registrar contacto de emergencia</span>
             </button>
         </div>
     </div>
 
     <!-- Main -->
     <div class="flex flex-auto overflow-hidden">
-        <!-- Categories list -->
+        <!-- Emergency Contacts list -->
         <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
-            <div class="grid" *ngIf="categoryList$ | async as categoryList">
-                <ng-container *ngIf="totalItems > 0; else noCategories">
+            <div class="grid" *ngIf="emergencyContactList$ | async as emergencyContactList">
+                <ng-container *ngIf="totalItems > 0; else noEmergencyContacts">
                     <!-- Header -->
                     <div
-                        class="inventory-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5">
-                        <div>Título</div>
-                        <div>Slug</div>
+                        class="inventory-grid z-10 sticky top-0 grid gap-10 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5">
+                        <div>Nomber</div>
+                        <div>Linea</div>
+                        <div>Celular</div>
                         <div>Acciones</div>
                     </div>
 
                     <!-- Rows -->
-                    <ng-container *ngFor="let category of categoryList.data; let i=index ">
-                        <div class="inventory-grid grid items-center gap-4 py-5 px-6 md:px-8 border-b">
-                            <div class="truncate">{{category.title}}</div>
-                            <div class="truncate">{{category.slug}}</div>
+                    <ng-container *ngFor="let emergencyContact of emergencyContactList.data; let i=index ">
+                        <div class="inventory-grid grid items-center gap-10 py-5 px-6 md:px-8 border-b">
+                            <div class="truncate">{{emergencyContact.name}}</div>
+                            <div class="truncate">{{emergencyContact.line}}</div>
+                            <div class="truncate">{{emergencyContact.phone}}</div>
                             <!-- Details button -->
                             <div>
                                 <button class="min-w-10 min-h-7 h-7 px-2 leading-6" mat-stroked-button
-                                    (click)="toggleDetails(category)">
+                                    (click)="toggleDetails(emergencyContact)">
                                     <mat-icon class="icon-size-5"
-                                        [svgIcon]="selectedCategory?.id === category.id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
+                                        [svgIcon]="selectEmergencyContact?.id === emergencyContact.id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
                                 </button>
                             </div>
 
                         </div>
                         <!-- Expanded Details -->
-                        <div class="grid" *ngIf="selectedCategory?.id === category.id">
+                        <!-- Expanded Details -->
+                        <div class="grid" *ngIf="selectEmergencyContact?.id === emergencyContact.id">
                             <div class="shadow-lg overflow-hidden">
                                 <div class="flex border-b">
-                                    <form class="flex flex-col w-full" [formGroup]="categoryForm.formGroup">
+                                    <form class="flex flex-col w-full" [formGroup]="emergencyContactForm.formGroup">
                                         <div class="flex flex-col sm:flex-row p-8">
                                             <div class="flex flex-auto flex-wrap">
-                                                <!-- Category Details Form -->
+                                                <!-- Emergency Contacts Details Form -->
                                                 <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
-                                                    <!-- Title -->
+                                                    <!-- Name -->
                                                     <mat-form-field class="w-full">
-                                                        <mat-label>Título</mat-label>
-                                                        <input matInput formControlName="title">
+                                                        <mat-label>Nombre</mat-label>
+                                                        <input matInput formControlName="name">
                                                     </mat-form-field>
 
-                                                    <!-- Slug -->
+                                                    <!-- Line -->
                                                     <mat-form-field class="w-full">
-                                                        <mat-label>Slug</mat-label>
-                                                        <input matInput formControlName="slug">
+                                                        <mat-label>Linea</mat-label>
+                                                        <input matInput formControlName="line">
+                                                    </mat-form-field>
+
+                                                    <!-- Phone -->
+                                                    <mat-form-field class="w-full">
+                                                        <mat-label>Celular</mat-label>
+                                                        <input matInput formControlName="phone">
                                                     </mat-form-field>
                                                 </div>
                                             </div>
@@ -81,7 +90,7 @@
                                         <!-- Actions -->
                                         <div class="flex items-center justify-between w-full border-t px-8 py-4">
                                             <button class="-ml-4" mat-button [color]="'warn'"
-                                                *ngIf="method == 'update' " (click)="delete(category.id)">
+                                                *ngIf="method == 'update' " (click)="delete(emergencyContact.id)">
                                                 Eliminar
                                             </button>
                                             <div class="flex items-center">
@@ -89,11 +98,12 @@
                                                     Cancelar
                                                 </button>
                                                 <button mat-flat-button [color]="'primary'" *ngIf="method == 'update' "
-                                                    (click)="update(category.id)" [disabled]="categoryForm.invalid">
+                                                    (click)="update(emergencyContact.id)"
+                                                    [disabled]="emergencyContactForm.invalid">
                                                     Actualizar
                                                 </button>
                                                 <button mat-flat-button [color]="'primary'" *ngIf="method == 'store' "
-                                                    (click)="store()" [disabled]="categoryForm.invalid">
+                                                    (click)="store()" [disabled]="emergencyContactForm.invalid">
                                                     Registrar
                                                 </button>
                                             </div>
@@ -104,29 +114,36 @@
                         </div>
                     </ng-container>
                 </ng-container>
-                <!-- No Categories Template -->
-                <ng-template #noCategories>
+                <!-- No EmergencyContacts Template -->
+                <ng-template #noEmergencyContacts>
                     <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
-                        ¡No hay categorias registradas!, por favor registre la primera categoria
+                        ¡No hay contactos de emergencia registrados!, por favor registre el primer contacto de
+                        emergencia
                     </div>
                     <div class="grid">
                         <div class="shadow-lg overflow-hidden">
                             <div class="flex border-b">
-                                <form class="flex flex-col w-full" [formGroup]="categoryForm.formGroup">
+                                <form class="flex flex-col w-full" [formGroup]="emergencyContactForm.formGroup">
                                     <div class="flex flex-col sm:flex-row p-8">
                                         <div class="flex flex-auto flex-wrap">
-                                            <!-- Category Details Form -->
+                                            <!-- EmergencyContact Details Form -->
                                             <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
-                                                <!-- Title -->
+                                                <!-- Name -->
                                                 <mat-form-field class="w-full">
-                                                    <mat-label>Título</mat-label>
-                                                    <input matInput formControlName="title">
+                                                    <mat-label>Nombre: </mat-label>
+                                                    <input matInput formControlName="name">
                                                 </mat-form-field>
 
-                                                <!-- Slug -->
+                                                <!-- Line -->
                                                 <mat-form-field class="w-full">
-                                                    <mat-label>Slug</mat-label>
-                                                    <input matInput formControlName="slug">
+                                                    <mat-label>Linea: </mat-label>
+                                                    <input matInput formControlName="line">
+                                                </mat-form-field>
+
+                                                <!-- Phone -->
+                                                <mat-form-field class="w-full">
+                                                    <mat-label>Celular: </mat-label>
+                                                    <input matInput formControlName="phone">
                                                 </mat-form-field>
                                             </div>
                                         </div>
@@ -139,7 +156,7 @@
                                                 Cancelar
                                             </button>
                                             <button mat-flat-button [color]="'primary'" (click)="store()"
-                                                [disabled]="categoryForm.invalid">
+                                                [disabled]="emergencyContactForm.invalid">
                                                 Registrar
                                             </button>
                                         </div>

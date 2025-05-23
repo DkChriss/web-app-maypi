@@ -237,6 +237,14 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 roles: [2],
                 exactMatch: true,
             },
+            {
+                id: 'apps.help-center.home',
+                title: 'Contactos de emergencia',
+                type: 'basic',
+                link: '/dashboards/emergency-contacts',
+                roles: [2],
+                exactMatch: true,
+            },
         ]
 
     }

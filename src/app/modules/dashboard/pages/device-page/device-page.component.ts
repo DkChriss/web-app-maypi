@@ -50,7 +50,7 @@ export class DevicePageComponent implements OnInit, OnDestroy {
         submitted: false,
         submitting: false,
         formGroup: new FormGroup({
-            user_id: new FormControl<number>(null, Validators.required),
+            user_id: new FormControl<number>(null),
             code: new FormControl<string>('', Validators.required),
             name: new FormControl<string>('', Validators.required),
             password: new FormControl<string>('', Validators.required),

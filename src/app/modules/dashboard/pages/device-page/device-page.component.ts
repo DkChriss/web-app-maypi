@@ -16,6 +16,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelect, MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { QuillModule } from 'ngx-quill';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
     selector: 'app-device-page',
@@ -34,6 +35,7 @@ import { QuillModule } from 'ngx-quill';
         QuillModule,
         MatCardModule,
         MatDialogModule,
+        MatCheckboxModule
     ],
     templateUrl: './device-page.component.html',
     styleUrl: './device-page.component.scss'

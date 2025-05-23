@@ -44,7 +44,7 @@ export class DevicePageComponent implements OnInit, OnDestroy {
     configForm: UntypedFormGroup;
     isLoading = false;
     isEditMode = false;
-    selectedDevice: Device | null = null
+    selectDevice: Device | null = null
     method = 'store'
     deviceForm = {
         submitted: false,
@@ -114,7 +114,7 @@ export class DevicePageComponent implements OnInit, OnDestroy {
                     this.users = res.data
                 } else {
                     res.data.forEach(element => {
-                        if (!this.users.some(user => user.id === element.user.id)) {
+                        if (!this.users.some(user => user.id === element.id)) {
                             this.users.push(element)
                         }
                     });
@@ -172,7 +172,7 @@ export class DevicePageComponent implements OnInit, OnDestroy {
             status: false
         }
         this.method = 'store'
-        this.selectedDevice = newDevice
+        this.selectDevice = newDevice
     }
 
     store(): void {
@@ -194,10 +194,10 @@ export class DevicePageComponent implements OnInit, OnDestroy {
 
     toggleDetails(device: Device): void {
         this.isEditMode = !this.isEditMode
-        if (this.selectedDevice?.id == device.id) {
-            this.selectedDevice = null
+        if (this.selectDevice?.id == device.id) {
+            this.selectDevice = null
         } else {
-            this.selectedDevice = device
+            this.selectDevice = device
             this._deviceService.show(device.id).subscribe({
                 next: (resp: any) => {
                     this.method = 'update'
@@ -218,7 +218,7 @@ export class DevicePageComponent implements OnInit, OnDestroy {
     }
 
     closeDetails(): void {
-        this.selectedDevice = null
+        this.selectDevice = null
         this.isEditMode = false
     }
 
@@ -240,13 +240,13 @@ export class DevicePageComponent implements OnInit, OnDestroy {
     }
 
     cancelEdit() {
-        if (this.selectedDevice) {
+        if (this.selectDevice) {
             this.deviceForm.formGroup.patchValue({
-                user_id: this.selectedDevice.user_id,
-                code: this.selectedDevice.code,
-                name: this.selectedDevice.name,
-                password: this.selectedDevice.password,
-                status: this.selectedDevice.status
+                user_id: this.selectDevice.user_id,
+                code: this.selectDevice.code,
+                name: this.selectDevice.name,
+                password: this.selectDevice.password,
+                status: this.selectDevice.status
             }, { emitEvent: false })
         }
         this.isEditMode = false;

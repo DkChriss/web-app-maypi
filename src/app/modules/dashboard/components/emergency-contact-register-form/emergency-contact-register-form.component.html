@@ -1,0 +1,46 @@
+<div class="p-6">
+    <h2 mat-dialog-title class="text-center text-2xl font-bold uppercase mb-4">
+        AGREGAR UN CONTACTO DE EMERGENCIA
+    </h2>
+    <mat-dialog-content>
+        <p class="text-center mb-6 text-sm">
+            SE LE ENVIARÁ TU CODIGO DE PERSONA, Y SI SOLO ESTA LA PERSONA EN TU LISTA DE CONTACTOS CON TU CODIGO
+            AL REPORTAR LA DENUNCIA A LAS AUTORIDADES PODRÁ UBICARTE
+        </p>
+        <form [formGroup]="form.formGroup" (ngSubmit)="formSubmit()" novalidate>
+            <div class="grid grid-cols-1 gap-4">
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Nombre</mat-label>
+                    <input matInput name="name" formControlName="name" placeholder="Ingrese nombre" required>
+                    <mat-error *ngIf="Form.name.invalid && (Form.name.dirty || Form.name.touched)">
+                        El nombre del contacto de emergencia es requerido
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Teléfono</mat-label>
+                    <input matInput name="phone" formControlName="phone" placeholder="Ingrese teléfono"
+                        pattern="^\+591\s?[6-7][0-9]{7}$" required>
+                    <mat-error *ngIf="Form.phone.invalid && (Form.phone.dirty || Form.phone.touched)">
+                        El telefono del contacto de emergencia es requerido
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Línea Telefónica</mat-label>
+                    <mat-select name="line" formControlName="line" placeholder="Seleccione línea" required>
+                        <mat-option value="Viva">Viva</mat-option>
+                        <mat-option value="Tigo">Tigo</mat-option>
+                        <mat-option value="Entel">Entel</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="Form.line.invalid && (Form.line.dirty || Form.line.touched)">
+                        La linea telefonica es contacto de emergencia es requerido
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </form>
+    </mat-dialog-content>
+    <mat-dialog-actions class="flex justify-center">
+        <button mat-flat-button color="primary" (click)="formSubmit()" class="w-full rounded-none">
+            Enviar codigo de Persona Maypi al Contacto y Guardarlo
+        </button>
+    </mat-dialog-actions>
+</div>

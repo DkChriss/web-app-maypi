@@ -19,7 +19,7 @@
                     "options": {
                         "outputPath": "dist/fuse",
                         "index": "src/index.html",
-                        "main": "src/main.ts",
+                        "main": "src/main.ts", 
                         "polyfills": [
                             "zone.js"
                         ],
@@ -32,7 +32,12 @@
                             "crypto-js/hmac-sha256",
                             "crypto-js/enc-base64",
                             "flat",
-                            "quill"
+                            "quill",
+                            "canvg",
+                            "core-js",
+                            "raf",
+                            "rgbcolor",
+                            "jspdf-autotable"
                         ],
                         "assets": [
                             "src/favicon-16x16.png",
@@ -46,7 +51,8 @@
                         ],
                         "stylePreprocessorOptions": {
                             "includePaths": [
-                                "src/@fuse/styles"
+                                "src/@fuse/styles",
+                                "node_modules"
                             ]
                         },
                         "styles": [
@@ -55,7 +61,10 @@
                             "src/styles/vendors.scss",
                             "src/@fuse/styles/main.scss",
                             "src/styles/styles.scss",
-                            "src/styles/tailwind.scss"
+                            "src/styles/tailwind.scss",
+                            "node_modules/leaflet/dist/leaflet.css",
+                            "src/styles.scss",
+                            "node_modules/ol/ol.css"
                         ],
                         "scripts": []
                     },
@@ -81,7 +90,13 @@
                             "vendorChunk": true,
                             "extractLicenses": false,
                             "sourceMap": true,
-                            "namedChunks": true
+                            "namedChunks": true,
+                            "fileReplacements": [
+                              {
+                                "replace": "src/environments/environment.ts",
+                                "with": "src/environments/environment.development.ts"
+                              }
+                            ]
                         }
                     },
                     "defaultConfiguration": "production"
@@ -126,5 +141,8 @@
                 }
             }
         }
+    },
+    "cli": {
+      "analytics": "23037b78-2e24-4447-ab5a-915137078a5b"
     }
 }

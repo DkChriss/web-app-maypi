@@ -11,14 +11,55 @@ import { Router, RouterLink } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { AuthService } from 'app/core/auth/auth.service';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
     selector     : 'auth-sign-up',
     templateUrl  : './sign-up.component.html',
     encapsulation: ViewEncapsulation.None,
-    animations   : fuseAnimations,
+    animations   : [
+        fuseAnimations,
+        trigger('fadeIn', [
+            transition(':enter', [
+                style({ opacity: 0 }),
+                animate('600ms ease-in', style({ opacity: 1 }))
+            ])
+        ]),
+        trigger('slideIn', [
+            transition(':enter', [
+                style({ transform: 'translateY(20px)', opacity: 0 }),
+                animate('400ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
+            ])
+        ]),
+        trigger('shake', [
+            transition('* => error', [
+                style({ transform: 'translateX(0)' }),
+                animate('100ms', style({ transform: 'translateX(-10px)' })),
+                animate('100ms', style({ transform: 'translateX(10px)' })),
+                animate('100ms', style({ transform: 'translateX(-10px)' })),
+                animate('100ms', style({ transform: 'translateX(10px)' })),
+                animate('100ms', style({ transform: 'translateX(0)' }))
+            ])
+        ])
+    ],
     standalone   : true,
-    imports      : [RouterLink, NgIf, FuseAlertComponent, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCheckboxModule, MatProgressSpinnerModule],
+    imports      : [
+        RouterLink, 
+        NgIf, 
+        FuseAlertComponent, 
+        FormsModule, 
+        ReactiveFormsModule, 
+        MatFormFieldModule, 
+        MatInputModule, 
+        MatButtonModule, 
+        MatIconModule, 
+        MatCheckboxModule, 
+        MatProgressSpinnerModule, 
+        MatSelectModule, 
+        MatOptionModule
+    ],
 })
 export class AuthSignUpComponent implements OnInit
 {
@@ -30,6 +71,15 @@ export class AuthSignUpComponent implements OnInit
     };
     signUpForm: UntypedFormGroup;
     showAlert: boolean = false;
+    isLoading: boolean = false;
+
+    // Lista de líneas telefónicas
+    roles = [
+        { id: 1, name: 'Entel' },
+        { id: 2, name: 'Viva' },
+        { id: 3, name: 'Tigo' }
+    ];
+    image: File | null = null;
 
     /**
      * Constructor
@@ -53,13 +103,27 @@ export class AuthSignUpComponent implements OnInit
     {
         // Create the form
         this.signUpForm = this._formBuilder.group({
-                name      : ['', Validators.required],
-                email     : ['', [Validators.required, Validators.email]],
-                password  : ['', Validators.required],
-                company   : [''],
-                agreements: ['', Validators.requiredTrue],
-            },
-        );
+            firstName : ['', Validators.required],
+            lastName  : ['', Validators.required],
+            username  : ['', Validators.required],
+            email     : ['', [Validators.required, Validators.email]],
+            phone     : ['', Validators.required],
+            password  : ['', Validators.required],
+            role      : ['', Validators.required],
+            image     : [null],  // Campo de imagen ya no tiene validación
+        });
+    }
+
+    // Método para manejar la carga de la imagen
+    onFileChange(event: any): void {
+        const file = event.target.files[0];
+        if (file) {
+            this.image = file;
+            // Asignar el archivo al formulario
+            this.signUpForm.patchValue({
+                image: file,
+            });
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -72,13 +136,19 @@ export class AuthSignUpComponent implements OnInit
     signUp(): void
     {
         // Do nothing if the form is invalid
-        if ( this.signUpForm.invalid )
+        if (this.signUpForm.invalid)
         {
+            // Marcar todos los campos como tocados para mostrar errores
+            Object.keys(this.signUpForm.controls).forEach(key => {
+                const control = this.signUpForm.get(key);
+                control.markAsTouched();
+            });
             return;
         }
 
         // Disable the form
         this.signUpForm.disable();
+        this.isLoading = true;
 
         // Hide the alert
         this.showAlert = false;
@@ -95,6 +165,7 @@ export class AuthSignUpComponent implements OnInit
                 {
                     // Re-enable the form
                     this.signUpForm.enable();
+                    this.isLoading = false;
 
                     // Reset the form
                     this.signUpNgForm.resetForm();
@@ -102,7 +173,7 @@ export class AuthSignUpComponent implements OnInit
                     // Set the alert
                     this.alert = {
                         type   : 'error',
-                        message: 'Something went wrong, please try again.',
+                        message: 'Ha ocurrido un error, por favor intente nuevamente.',
                     };
 
                     // Show the alert

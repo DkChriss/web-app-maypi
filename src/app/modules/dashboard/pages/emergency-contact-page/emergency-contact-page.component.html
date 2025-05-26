@@ -1,0 +1,175 @@
+<div class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent">
+    <!-- Header -->
+    <div
+        class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b">
+        <!-- Loader -->
+        <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+        </div>
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">Contactos de emergencia</div>
+
+        <!-- Actions -->
+        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <!-- Search -->
+            <mat-form-field class="fuse-mat-dense fuse-mat-rounded min-w-64" [subscriptSizing]="'dynamic'">
+                <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:magnifying-glass'"></mat-icon>
+                <input matInput [formControl]="" [autocomplete]="'off'" [placeholder]="'Buscar contacto de emergencia'">
+            </mat-form-field>
+
+            <!-- Add Emergency Contacts button -->
+            <button class="ml-4" mat-flat-button [color]="'primary'" (click)="openStore()">
+                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                <span class="ml-2 mr-1">Registrar contacto de emergencia</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="flex flex-auto overflow-hidden">
+        <!-- Emergency Contacts list -->
+        <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
+            <div class="grid" *ngIf="emergencyContactList$ | async as emergencyContactList">
+                <ng-container *ngIf="totalItems > 0; else noEmergencyContacts">
+                    <!-- Header -->
+                    <div
+                        class="inventory-grid z-10 sticky top-0 grid gap-10 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5">
+                        <div>Nomber</div>
+                        <div>Linea</div>
+                        <div>Celular</div>
+                        <div>Acciones</div>
+                    </div>
+
+                    <!-- Rows -->
+                    <ng-container *ngFor="let emergencyContact of emergencyContactList.data; let i=index ">
+                        <div class="inventory-grid grid items-center gap-10 py-5 px-6 md:px-8 border-b">
+                            <div class="truncate">{{emergencyContact.name}}</div>
+                            <div class="truncate">{{emergencyContact.line}}</div>
+                            <div class="truncate">{{emergencyContact.phone}}</div>
+                            <!-- Details button -->
+                            <div>
+                                <button class="min-w-10 min-h-7 h-7 px-2 leading-6" mat-stroked-button
+                                    (click)="toggleDetails(emergencyContact)">
+                                    <mat-icon class="icon-size-5"
+                                        [svgIcon]="selectEmergencyContact?.id === emergencyContact.id ? 'heroicons_solid:chevron-up' : 'heroicons_solid:chevron-down'"></mat-icon>
+                                </button>
+                            </div>
+
+                        </div>
+                        <!-- Expanded Details -->
+                        <!-- Expanded Details -->
+                        <div class="grid" *ngIf="selectEmergencyContact?.id === emergencyContact.id">
+                            <div class="shadow-lg overflow-hidden">
+                                <div class="flex border-b">
+                                    <form class="flex flex-col w-full" [formGroup]="emergencyContactForm.formGroup">
+                                        <div class="flex flex-col sm:flex-row p-8">
+                                            <div class="flex flex-auto flex-wrap">
+                                                <!-- Emergency Contacts Details Form -->
+                                                <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
+                                                    <!-- Name -->
+                                                    <mat-form-field class="w-full">
+                                                        <mat-label>Nombre</mat-label>
+                                                        <input matInput formControlName="name">
+                                                    </mat-form-field>
+
+                                                    <!-- Line -->
+                                                    <mat-form-field class="w-full">
+                                                        <mat-label>Linea</mat-label>
+                                                        <input matInput formControlName="line">
+                                                    </mat-form-field>
+
+                                                    <!-- Phone -->
+                                                    <mat-form-field class="w-full">
+                                                        <mat-label>Celular</mat-label>
+                                                        <input matInput formControlName="phone">
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Actions -->
+                                        <div class="flex items-center justify-between w-full border-t px-8 py-4">
+                                            <button class="-ml-4" mat-button [color]="'warn'"
+                                                *ngIf="method == 'update' " (click)="delete(emergencyContact.id)">
+                                                Eliminar
+                                            </button>
+                                            <div class="flex items-center">
+                                                <button mat-stroked-button class="mr-2" (click)="cancelEdit()">
+                                                    Cancelar
+                                                </button>
+                                                <button mat-flat-button [color]="'primary'" *ngIf="method == 'update' "
+                                                    (click)="update(emergencyContact.id)"
+                                                    [disabled]="emergencyContactForm.invalid">
+                                                    Actualizar
+                                                </button>
+                                                <button mat-flat-button [color]="'primary'" *ngIf="method == 'store' "
+                                                    (click)="store()" [disabled]="emergencyContactForm.invalid">
+                                                    Registrar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </ng-container>
+                <!-- No EmergencyContacts Template -->
+                <ng-template #noEmergencyContacts>
+                    <div class="p-8 sm:p-16 border-t text-4xl font-semibold tracking-tight text-center">
+                        ¡No hay contactos de emergencia registrados!, por favor registre el primer contacto de
+                        emergencia
+                    </div>
+                    <div class="grid">
+                        <div class="shadow-lg overflow-hidden">
+                            <div class="flex border-b">
+                                <form class="flex flex-col w-full" [formGroup]="emergencyContactForm.formGroup">
+                                    <div class="flex flex-col sm:flex-row p-8">
+                                        <div class="flex flex-auto flex-wrap">
+                                            <!-- EmergencyContact Details Form -->
+                                            <div class="flex flex-col w-full lg:w-2/4 sm:pl-8">
+                                                <!-- Name -->
+                                                <mat-form-field class="w-full">
+                                                    <mat-label>Nombre: </mat-label>
+                                                    <input matInput formControlName="name">
+                                                </mat-form-field>
+
+                                                <!-- Line -->
+                                                <mat-form-field class="w-full">
+                                                    <mat-label>Linea: </mat-label>
+                                                    <input matInput formControlName="line">
+                                                </mat-form-field>
+
+                                                <!-- Phone -->
+                                                <mat-form-field class="w-full">
+                                                    <mat-label>Celular: </mat-label>
+                                                    <input matInput formControlName="phone">
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Actions -->
+                                    <div class="flex items-center justify-between w-full border-t px-8 py-4">
+                                        <div class="flex items-center">
+                                            <button mat-stroked-button class="mr-2" (click)="cancelEdit()">
+                                                Cancelar
+                                            </button>
+                                            <button mat-flat-button [color]="'primary'" (click)="store()"
+                                                [disabled]="emergencyContactForm.invalid">
+                                                Registrar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+
+</div>

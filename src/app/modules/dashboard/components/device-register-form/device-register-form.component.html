@@ -1,0 +1,47 @@
+<div class="p-6">
+    <h2 mat-dialog-title class="text-center text-2xl font-bold uppercase mb-4">
+        Registrar nuevo dispositivo
+    </h2>
+
+    <mat-dialog-content>
+        <p class="text-center mb-6 text-sm text-secondary">
+            Vincula tu dispositivo para poder utilizar todas las funciones de seguridad de Maypi.
+            Asegúrate de ingresar correctamente el nombre y código del dispositivo.
+        </p>
+
+        <form [formGroup]="form.formGroup" (ngSubmit)="formSubmit()" novalidate>
+            <div class="grid grid-cols-1 gap-4">
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Nombre</mat-label>
+                    <input matInput name="name" formControlName="name" placeholder="Ingrese nombre del dispositivo"
+                        required>
+                    <mat-error *ngIf="Form.name.invalid && (Form.name.dirty || Form.name.touched)">
+                        El nombre del dispositivo es requerido
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Codigo</mat-label>
+                    <input matInput name="code" formControlName="code" placeholder="Ingrese el codigo del dispositivo"
+                        required>
+                    <mat-error *ngIf="Form.code.invalid && (Form.code.dirty || Form.code.touched)">
+                        El codigo del dispositivo es requerido
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Contraseña</mat-label>
+                    <input matInput name="password" formControlName="password"
+                        placeholder="Ingrese nombre del dispositivo" required>
+                    <mat-error *ngIf="Form.password.invalid && (Form.password.dirty || Form.password.touched)">
+                        La contraseña del dispositivo es requerido
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="flex justify-center">
+        <button mat-flat-button color="primary" (click)="formSubmit()" class="w-full rounded-none">
+            Registrar
+        </button>
+    </mat-dialog-actions>
+</div>

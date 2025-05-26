@@ -12,10 +12,19 @@ export class DeviceService {
         private _httpClient: HttpClient
     ) { }
 
-    list(page: number = 1, size: number = 10) {
-        const params = new HttpParams()
-            .set("page", page)
-            .set("size", size)
+    list(page: number = 1, size: number = 10, search: string = "") {
+        let params: any;
+
+        if (search !== '') {
+            params = new HttpParams()
+                .set("page", page)
+                .set("size", size)
+                .set("search", search)
+        } else {
+            params = new HttpParams()
+                .set("page", page)
+                .set("size", size)
+        }
 
         return this._httpClient.get(
             `${environment.baseUrl}/devices`,

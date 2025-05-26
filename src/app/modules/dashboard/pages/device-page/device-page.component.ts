@@ -4,11 +4,11 @@ import { Device, DeviceStore, DeviceUpdate } from '../../models/device';
 import { DeviceService } from '../../services/device.service';
 import { UntypedFormGroup, FormGroup, FormControl, Validators, UntypedFormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { BehaviorSubject, combineLatest, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs';
 import { UserService } from '../../services/user.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -17,6 +17,8 @@ import { MatSelect, MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { QuillModule } from 'ngx-quill';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { DeviceRegisterFormComponent } from '../../components/device-register-form/device-register-form.component';
+import { DeviceEditFormComponent } from '../../components/device-edit-form/device-edit-form.component';
 
 @Component({
     selector: 'app-device-page',
@@ -41,24 +43,12 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     styleUrl: './device-page.component.scss'
 })
 export class DevicePageComponent implements OnInit, OnDestroy {
-    @ViewChild('select_1', { static: false }) select_1: MatSelect;
 
+    displayedColumns: string[] = ['name', 'code', 'status', 'actions'];
+
+    isLoading = true
     configForm: UntypedFormGroup;
-    isLoading = false;
-    isEditMode = false;
-    selectDevice: Device | null = null
-    method = 'store'
-    deviceForm = {
-        submitted: false,
-        submitting: false,
-        formGroup: new FormGroup({
-            user_id: new FormControl<number>(null),
-            code: new FormControl<string>('', Validators.required),
-            name: new FormControl<string>('', Validators.required),
-            password: new FormControl<string>('', Validators.required),
-            status: new FormControl<boolean>(false, Validators.required),
-        })
-    }
+
 
     deviceTable = {
         reload: new BehaviorSubject<void>(null)
@@ -66,68 +56,32 @@ export class DevicePageComponent implements OnInit, OnDestroy {
 
     pageSize$ = new BehaviorSubject<number>(10);
     pageNumber$ = new BehaviorSubject<number>(1);
+    searchBy$ = new BehaviorSubject<string>('');
     totalItems = 0
-    devices: any
-
-    //USERS
-    pageSizeUserSelect$ = new BehaviorSubject<number>(10)
-    pageNumberUserSelect$ = new BehaviorSubject<number>(1)
 
     deviceList$ = combineLatest([
         this.pageSize$,
         this.pageNumber$,
+        this.searchBy$,
         this.deviceTable.reload
     ]).pipe(
         debounceTime(300),
         distinctUntilChanged(),
         switchMap(() => this._deviceService.list(
             parseInt(this.pageNumber$.value.toString()),
-            parseInt(this.pageSize$.value.toString())
+            parseInt(this.pageSize$.value.toString()),
+            this.searchBy$.value
         ).pipe(
             tap((res: any) => {
                 this.totalItems = res.total
-                this.devices = res.data
-                this.isLoading = false
-            })
-        ))
-    )
-
-    users: any = []
-    canLoadMore: boolean = false
-
-    userSelect = {
-        reload: new BehaviorSubject<void>(null)
-    }
-
-
-    userSelectList$ = combineLatest([
-        this.pageSizeUserSelect$,
-        this.pageNumberUserSelect$,
-        this.userSelect.reload
-    ]).pipe(
-        distinctUntilChanged(),
-        switchMap(() => this._userService.list(
-            parseInt(this.pageNumberUserSelect$.value.toString()),
-            parseInt(this.pageSizeUserSelect$.value.toString())
-        ).pipe(
-            tap((res: any) => {
-                this.canLoadMore = res.links.next !== null
-                if (this.users.length === 0) {
-                    this.users = res.data
-                } else {
-                    res.data.forEach(element => {
-                        if (!this.users.some(user => user.id === element.id)) {
-                            this.users.push(element)
-                        }
-                    });
-                }
-            })
+            }),
+            map((res: any) => res.data)
         ))
     )
 
     constructor(
+        private dialog: MatDialog,
         private _deviceService: DeviceService,
-        private _userService: UserService,
         private _fuseConfirmationService: FuseConfirmationService,
         private _formBuilder: UntypedFormBuilder,
     ) { }
@@ -161,98 +115,34 @@ export class DevicePageComponent implements OnInit, OnDestroy {
 
     }
 
-    openStore(): void {
-        this.deviceForm.formGroup.reset()
-        this.closeDetails()
-        this.isEditMode = true;
-        let newDevice: Device = {
-            id: this.devices[0]["id"],
-            user_id: 1,
-            code: 'code',
-            name: 'name',
-            password: 'password',
-            status: false
-        }
-        this.method = 'store'
-        this.selectDevice = newDevice
-    }
-
     store(): void {
-        this.deviceForm.submitted = true
-        if (this.deviceForm.formGroup.valid) {
-            this.deviceForm.submitting = true
-            const newDevice: DeviceStore = this.deviceForm.formGroup.getRawValue()
-            this._deviceService.store(newDevice).subscribe({
-                next: (resp: any) => {
-                    this.deviceTable.reload.next();
-                    this.closeDetails();
-                },
-                error: (error) => {
-                    console.log(error)
-                }
-            })
-        }
+        const dialogRef = this.dialog.open(DeviceRegisterFormComponent, {
+            width: '600px',
+            height: 'auto',
+            disableClose: false
+        })
+
+        dialogRef.afterClosed().subscribe(result => {
+            this.deviceTable.reload.next();
+        })
     }
 
-    toggleDetails(device: Device): void {
-        this.isEditMode = !this.isEditMode
-        if (this.selectDevice?.id == device.id) {
-            this.selectDevice = null
-        } else {
-            this.selectDevice = device
-            this._deviceService.show(device.id).subscribe({
-                next: (resp: any) => {
-                    this.method = 'update'
-                    this.isEditMode = true;
-                    this.deviceForm.formGroup.patchValue({
-                        user_id: resp.data.user.id,
-                        code: resp.data.code,
-                        name: resp.data.name,
-                        password: resp.data.password,
-                        status: resp.data.status
-                    }, { emitEvent: false })
-                },
-                error: (error) => {
-                    console.log(error)
-                }
-            })
-        }
+    edit(device: Device): void {
+        const dialogRef = this.dialog.open(DeviceEditFormComponent, {
+            width: '600px',
+            height: 'auto',
+            disableClose: false,
+            data: {
+                device: device
+            }
+        })
+
+        dialogRef.afterClosed().subscribe(result => {
+            this.deviceTable.reload.next();
+        })
+
     }
 
-    closeDetails(): void {
-        this.selectDevice = null
-        this.isEditMode = false
-    }
-
-    update(id: number): void {
-        this.deviceForm.submitted = true
-        if (this.deviceForm.formGroup.valid) {
-            this.deviceForm.submitting = true;
-            let deviceUpdate: DeviceUpdate = this.deviceForm.formGroup.getRawValue();
-            this._deviceService.update(id, deviceUpdate).subscribe({
-                next: (resp: any) => {
-                    this.deviceTable.reload.next()
-                    this.closeDetails()
-                },
-                error: (error) => {
-                    console.log(error)
-                }
-            })
-        }
-    }
-
-    cancelEdit() {
-        if (this.selectDevice) {
-            this.deviceForm.formGroup.patchValue({
-                user_id: this.selectDevice.user_id,
-                code: this.selectDevice.code,
-                name: this.selectDevice.name,
-                password: this.selectDevice.password,
-                status: this.selectDevice.status
-            }, { emitEvent: false })
-        }
-        this.isEditMode = false;
-    }
 
     delete(id: number): void {
         if (id) {
@@ -263,7 +153,6 @@ export class DevicePageComponent implements OnInit, OnDestroy {
                     this._deviceService.delete(id).subscribe({
                         next: (resp) => {
                             this.deviceTable.reload.next()
-                            this.method = this.totalItems === 0 ? "store" : "update"
                         }, error: (error) => {
                             console.log(error)
                         }
@@ -273,21 +162,8 @@ export class DevicePageComponent implements OnInit, OnDestroy {
         }
     }
 
-    onOpenedChange(event: any, select: string) {
-        if (event) {
-            this[select].panel.nativeElement.addEventListener(
-                'scroll',
-                (event: any) => {
-                    if (
-                        this[select].panel.nativeElement.scrollTop ===
-                        this[select].panel.nativeElement.scrollHeight -
-                        this[select].panel.nativeElement.offsetHeight
-                    ) {
-                        const nextPage: number = this.pageNumberUserSelect$.value + 1;
-                        this.pageNumberUserSelect$.next(nextPage);
-                    }
-                }
-            );
-        }
+    onPageChange(event) {
+        this.pageNumber$.next(event.pageIndex + 1)
+        this.pageSize$.next(event.pageSize)
     }
 }

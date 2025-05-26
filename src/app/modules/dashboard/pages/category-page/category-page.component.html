@@ -14,7 +14,8 @@
             <!-- Search -->
             <mat-form-field class="fuse-mat-dense fuse-mat-rounded min-w-64" [subscriptSizing]="'dynamic'">
                 <mat-icon class="icon-size-5" matPrefix [svgIcon]="'heroicons_solid:magnifying-glass'"></mat-icon>
-                <input matInput [formControl]="" [autocomplete]="'off'" [placeholder]="'Buscar Categorias'">
+                <input matInput (input)="searchBy$.next($event.target.value)" [autocomplete]="'off'"
+                    [placeholder]="'Buscar Categorias'">
             </mat-form-field>
 
             <!-- Add Categories button -->
@@ -30,7 +31,7 @@
         <!-- Categories list -->
         <div class="flex flex-col flex-auto sm:mb-18 overflow-hidden sm:overflow-y-auto">
             <div class="grid" *ngIf="categoryList$ | async as categoryList">
-                <ng-container *ngIf="totalItems > 0; else noCategories">
+                <ng-container *ngIf="totalItems > 0 || searchBy$.value != '' ; else noCategories">
                     <!-- Header -->
                     <div
                         class="inventory-grid z-10 sticky top-0 grid gap-4 py-4 px-6 md:px-8 shadow text-md font-semibold text-secondary bg-gray-50 dark:bg-black dark:bg-opacity-5">
@@ -38,7 +39,6 @@
                         <div>Slug</div>
                         <div>Acciones</div>
                     </div>
-
                     <!-- Rows -->
                     <ng-container *ngFor="let category of categoryList.data; let i=index ">
                         <div class="inventory-grid grid items-center gap-4 py-5 px-6 md:px-8 border-b">
@@ -154,5 +154,10 @@
     </div>
 
     <!-- Pagination -->
-
+    <mat-paginator
+        class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+        [ngClass]="{'pointer-events-none': isLoading}" [length]="totalItems" [pageIndex]="pageNumber$.value -1"
+        [pageSize]="pageSize$.value" [pageSizeOptions]="[5, 10, 25, 100]" [showFirstLastButtons]="true"
+        (page)="onPageChange($event)">
+    </mat-paginator>
 </div>

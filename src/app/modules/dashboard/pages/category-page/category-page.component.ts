@@ -59,19 +59,22 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
 
     pageSize$ = new BehaviorSubject<number>(10);
     pageNumber$ = new BehaviorSubject<number>(1);
+    searchBy$ = new BehaviorSubject<string>("");
     totalItems = 0
     categories: any
 
     categoryList$ = combineLatest([
         this.pageSize$,
         this.pageNumber$,
+        this.searchBy$,
         this.categoryTable.reload
     ]).pipe(
         debounceTime(300),
         distinctUntilChanged(),
         switchMap(() => this._categoryService.list(
-            parseInt(this.pageNumber$.value.toString()),
-            parseInt(this.pageSize$.value.toString())
+            this.pageNumber$.value,
+            this.pageSize$.value,
+            this.searchBy$.value
         ).pipe(
             tap((res: any) => {
                 this.totalItems = res.total
@@ -88,6 +91,7 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit(): void {
+        //CONFIRMATION DIALOG
         this.isLoading = false
         this.configForm = this._formBuilder.group({
             title: 'Eliminar la categoria',
@@ -213,6 +217,11 @@ export class CategoryPageComponent implements OnInit, OnDestroy {
                 }
             });
         }
+    }
+
+    onPageChange(event) {
+        this.pageNumber$.next(event.pageIndex + 1)
+        this.pageSize$.next(event.pageSize)
     }
 
 

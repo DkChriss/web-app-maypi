@@ -280,6 +280,11 @@ export class GuidePageComponent implements OnInit, OnDestroy {
         }
     }
 
+    onPageChange(event) {
+        this.pageNumber$.next(event.pageIndex + 1)
+        this.pageSize$.next(event.pageSize)
+    }
+
     onOpenedChange(event: any, select: string) {
         if (event) {
             this[select].panel.nativeElement.addEventListener(

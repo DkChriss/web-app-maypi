@@ -25,6 +25,7 @@
         "@angular/platform-browser": "17.0.3",
         "@angular/platform-browser-dynamic": "17.0.3",
         "@angular/router": "17.0.3",
+        "@casl/ability": "^6.7.3",
         "@ngneat/transloco": "6.0.0",
         "@types/chart.js": "^2.9.41",
         "@types/google.maps": "^3.58.1",

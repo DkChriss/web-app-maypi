@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MissingService } from '../../services/missing.service';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
-import { BehaviorSubject, combineLatest, debounceTime, distinctUntilChanged, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -39,7 +39,7 @@ import { Missing, MissingStore, MissingUpdate, StatusMissingEnum } from '../../m
     styleUrl: './missing-page.component.scss'
 })
 export class MissingPageComponent implements OnInit, OnDestroy {
-
+    displayedColumns: string[] = ['name', 'location', 'phone', 'status_missing', 'actions'];
     configForm: UntypedFormGroup;
     isLoading = true
     isEditMode = false
@@ -93,7 +93,8 @@ export class MissingPageComponent implements OnInit, OnDestroy {
                 this.totalItems = res.total;
                 this.missing = res.data
                 this.isLoading = false
-            })
+            }),
+            map((res: any) => res.data)
         ))
     )
 

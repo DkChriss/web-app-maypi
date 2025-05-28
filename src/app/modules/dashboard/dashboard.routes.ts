@@ -5,6 +5,7 @@ import { FaqsPageComponent } from "./pages/faqs-page/faqs-page.component";
 import { ContactSupportPageComponent } from "./pages/contact-support-page/contact-support-page.component";
 import { DevicePageComponent } from "./pages/device-page/device-page.component";
 import { EmergencyContactPageComponent } from "./pages/emergency-contact-page/emergency-contact-page.component";
+import { MissingPageComponent } from "./pages/missing-page/missing-page.component";
 
 export default [
     {
@@ -30,5 +31,9 @@ export default [
     {
         path: 'emergency-contacts',
         component: EmergencyContactPageComponent
+    },
+    {
+        path: 'missing',
+        component: MissingPageComponent
     }
 ] as Routes

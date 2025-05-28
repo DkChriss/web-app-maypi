@@ -56,7 +56,7 @@
                     <th mat-header-cell *matHeaderCellDef> Acciones </th>
                     <td mat-cell *matCellDef="let missing">
                         <div class="flex space-x-2">
-                            <button mat-icon-button (click)="edit(missing)">
+                            <button mat-icon-button (click)="update(missing)">
                                 <mat-icon>edit</mat-icon>
                             </button>
                             <button mat-icon-button (click)="delete(missing.id)">

@@ -32,8 +32,8 @@ export class MissingService {
         )
     }
 
-    store(missingStore: MissingStore) {
-        return this._httpClient.post<MissingStore>(
+    store(missingStore: FormData) {
+        return this._httpClient.post<FormData>(
             `${environment.baseUrl}/missing`,
             missingStore
         )

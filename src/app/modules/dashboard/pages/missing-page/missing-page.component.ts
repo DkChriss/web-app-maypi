@@ -14,8 +14,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { QuillModule } from 'ngx-quill';
-import { StatusMissingEnum } from '../../models/missing';
+import { Missing, StatusMissingEnum } from '../../models/missing';
 import { MissingRegisterFormComponent } from '../../components/missing-register-form/missing-register-form.component';
+import { MissingEditFormComponent } from '../../components/missing-edit-form/missing-edit-form.component';
 
 @Component({
     selector: 'app-missing-page',
@@ -142,8 +143,19 @@ export class MissingPageComponent implements OnInit, OnDestroy {
         })
     }
 
-    update(): void {
+    update(missing: Missing): void {
+        const dialogRef = this.dialog.open(MissingEditFormComponent, {
+            width: '70%',
+            height: 'auto',
+            disableClose: false,
+            data: {
+                missing: missing
+            }
+        })
 
+        dialogRef.afterClosed().subscribe(result => {
+            this.missingTable.reload.next();
+        })
     }
 
 

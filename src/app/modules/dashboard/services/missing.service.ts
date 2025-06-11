@@ -45,8 +45,8 @@ export class MissingService {
         )
     }
 
-    update(id: number, missingUpdate: MissingUpdate) {
-        return this._httpClient.put<MissingUpdate>(
+    update(id: number, missingUpdate: FormData) {
+        return this._httpClient.put<FormData>(
             `${environment.baseUrl}/missing/${id}`,
             missingUpdate
         )

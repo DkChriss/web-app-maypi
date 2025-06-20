@@ -1,0 +1,51 @@
+<div class="p-6">
+    <h2 mat-dialog-title class="text-center text-2xl font-bold uppercase mb-4">
+        Editar estado del caso de desparacion
+    </h2>
+
+    <mat-dialog-content>
+        <form [formGroup]="form.formGroup" (ngSubmit)="formSubmit()" novalidate>
+            <div class="grid grid-cols-1 gap-4 mt-2">
+                <div class="flex w-full">
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Estado del caso de la victima:</mat-label>
+                        <mat-select
+                            name="status_missing"
+                            formControlName="status_missing"
+                            placeholder="Seleccion el estado del caso de la victima"
+                            required
+                        >
+                            <mat-option value="pending">Pendiente</mat-option>
+                            <mat-option value="progress"
+                                >En progreso</mat-option
+                            >
+                            <mat-option value="suspended">Supendido</mat-option>
+                            <mat-option value="resumed">En resumen</mat-option>
+                            <mat-option value="completed">Completo</mat-option>
+                        </mat-select>
+                        <mat-error
+                            *ngIf="
+                                Form.status_missing.invalid &&
+                                (Form.status_missing.dirty ||
+                                    Form.status_missing.touched)
+                            "
+                        >
+                            El estado del caso de la victima es requerido
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="flex justify-center">
+        <button
+            mat-flat-button
+            color="primary"
+            (click)="formSubmit()"
+            class="w-full rounded-none"
+        >
+            Actualizar estado
+        </button>
+    </mat-dialog-actions>
+</div>

@@ -34,6 +34,7 @@ import { Missing, StatusMissingEnum } from '../../models/missing';
 import { MissingRegisterFormComponent } from '../../components/missing-register-form/missing-register-form.component';
 import { MissingEditFormComponent } from '../../components/missing-edit-form/missing-edit-form.component';
 import { MissingChangeStatusFormComponent } from '../../components/missing-change-status-form/missing-change-status-form.component';
+import { MissingImageModalComponent } from '../../components/missing-image-modal/missing-image-modal.component';
 
 @Component({
     selector: 'app-missing-page',
@@ -58,6 +59,13 @@ import { MissingChangeStatusFormComponent } from '../../components/missing-chang
     styleUrl: './missing-page.component.scss',
 })
 export class MissingPageComponent implements OnInit, OnDestroy {
+    statusLabel: { [key: string]: string } = {
+        pending: 'Pendiente',
+        progress: 'En Progreso',
+        suspended: 'Suspendido',
+        resumed: 'Reanudado',
+        completed: 'Completado',
+    };
     displayedColumns: string[] = [
         'name',
         'location',
@@ -232,5 +240,32 @@ export class MissingPageComponent implements OnInit, OnDestroy {
         dialogRef.afterClosed().subscribe((result) => {
             this.missingTable.reload.next();
         });
+    }
+
+    showImages(id: number) {
+        if (id) {
+            this._missingService.showImages(id).subscribe({
+                next: (response) => {
+                    const dialogRef = this.dialog.open(
+                        MissingImageModalComponent,
+                        {
+                            width: '50%',
+                            height: 'auto',
+                            disableClose: false,
+                            data: {
+                                images: response,
+                            },
+                        }
+                    );
+
+                    dialogRef.afterClosed().subscribe((result) => {
+                        this.missingTable.reload.next();
+                    });
+                },
+                error: (error) => {
+                    console.log(error);
+                },
+            });
+        }
     }
 }

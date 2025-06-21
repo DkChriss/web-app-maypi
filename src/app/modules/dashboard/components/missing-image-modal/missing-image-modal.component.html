@@ -1,0 +1,37 @@
+<div class="p-6">
+    <h2 mat-dialog-title class="text-center text-2xl font-bold uppercase mb-4">
+        Imagenes del caso de desaparicion
+    </h2>
+
+    <mat-dialog-content>
+        <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
+            <div>
+                <img
+                    class="h-auto max-w-full rounded-lg"
+                    [src]="'data:image/jpeg;base64,' + photo"
+                    alt=""
+                />
+                <h3>Foto de la persona desaparecida</h3>
+            </div>
+            <div>
+                <img
+                    class="h-auto max-w-full rounded-lg"
+                    [src]="'data:image/jpeg;base64,' + event_photo"
+                    alt=""
+                />
+                <h3>Foto del evento o lugar ultima vez visto</h3>
+            </div>
+        </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="flex justify-center">
+        <button
+            mat-flat-button
+            color="danger"
+            (click)="close()"
+            class="w-full rounded-none"
+        >
+            Cerrar
+        </button>
+    </mat-dialog-actions>
+</div>

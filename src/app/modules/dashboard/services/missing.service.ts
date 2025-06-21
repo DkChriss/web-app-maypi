@@ -52,8 +52,14 @@ export class MissingService {
 
     change(id: number, status_missing: any) {
         return this._httpClient.put<any>(
-            `${environment.baseUrl}/missing/update-status/${id}`,
+            `${environment.baseUrl}/missing/${id}/update-status`,
             status_missing
+        );
+    }
+
+    showImages(id: number) {
+        return this._httpClient.get(
+            `${environment.baseUrl}/missing/${id}/images`
         );
     }
 }

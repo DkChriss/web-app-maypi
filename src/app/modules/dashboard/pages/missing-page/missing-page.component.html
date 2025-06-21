@@ -1,0 +1,161 @@
+<div
+    class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent"
+>
+    <!-- Header -->
+    <div
+        class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b"
+    >
+        <!-- Loader -->
+        <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+        </div>
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">Desaparecidos</div>
+
+        <!-- Actions -->
+        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <!-- Search -->
+            <mat-form-field
+                class="fuse-mat-dense fuse-mat-rounded min-w-64"
+                [subscriptSizing]="'dynamic'"
+            >
+                <mat-icon
+                    class="icon-size-5"
+                    matPrefix
+                    [svgIcon]="'heroicons_solid:magnifying-glass'"
+                ></mat-icon>
+                <input
+                    matInput
+                    (input)="searchBy$.next($event.target.value)"
+                    [autocomplete]="'off'"
+                    [placeholder]="'Buscar Dispositivos'"
+                />
+            </mat-form-field>
+
+            <!-- Add Device button -->
+            <button
+                class="ml-4"
+                mat-flat-button
+                [color]="'primary'"
+                (click)="store()"
+            >
+                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                <span class="ml-2 mr-1">Registrar persona desaparecido</span>
+            </button>
+        </div>
+    </div>
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <div class="bg-card shadow rounded-lg overflow-hidden">
+            <table mat-table [dataSource]="missingList$ | async" class="w-full">
+                <!-- Device Name Column -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Nombre</th>
+                    <td mat-cell *matCellDef="let missing">
+                        {{ missing.name }}
+                    </td>
+                </ng-container>
+
+                <!-- Device ID Column -->
+                <ng-container matColumnDef="location">
+                    <th mat-header-cell *matHeaderCellDef>Ubicacion</th>
+                    <td mat-cell *matCellDef="let missing">
+                        {{ missing.place_of_disappearance }}
+                    </td>
+                </ng-container>
+
+                <!--STATUS -->
+                <ng-container matColumnDef="phone">
+                    <th mat-header-cell *matHeaderCellDef>Telefono</th>
+                    <td mat-cell *matCellDef="let missing">
+                        {{ missing.reporter_phone }}
+                    </td>
+                </ng-container>
+                <!-- status -->
+                <ng-container matColumnDef="status_missing">
+                    <th mat-header-cell *matHeaderCellDef>Estado</th>
+                    <td mat-cell *matCellDef="let missing">
+                        <span
+                            class="px-2 py-1 rounded-full text-xs font-semibold"
+                            [ngClass]="{
+                                'bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-gray-50':
+                                    missing.status_missing === 'pending',
+                                'bg-blue-200 text-blue-800 dark:bg-blue-600 dark:text-blue-50':
+                                    missing.status_missing === 'progress',
+                                'bg-yellow-200 text-yellow-800 dark:bg-yellow-600 dark:text-yellow-50':
+                                    missing.status_missing === 'suspended',
+                                'bg-purple-200 text-purple-800 dark:bg-purple-600 dark:text-purple-50':
+                                    missing.status_missing === 'resumed',
+                                'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50':
+                                    missing.status_missing === 'completed'
+                            }"
+                        >
+                            {{ statusLabel[missing.status_missing] }}
+                        </span>
+                    </td>
+                </ng-container>
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                    <td mat-cell *matCellDef="let missing">
+                        <div class="flex space-x-2">
+                            <button mat-icon-button (click)="update(missing)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button
+                                mat-icon-button
+                                (click)="delete(missing.id)"
+                            >
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                            <button
+                                mat-icon-button
+                                *ngIf="missing.status_missing != 'completed'"
+                                (click)="change(missing.id)"
+                            >
+                                <mat-icon>track_changes</mat-icon>
+                            </button>
+                            <button
+                                mat-icon-button
+                                (click)="showImages(missing.id)"
+                            >
+                                <mat-icon>image</mat-icon>
+                            </button>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr
+                    mat-row
+                    *matRowDef="let row; columns: displayedColumns"
+                ></tr>
+            </table>
+
+            <!-- Paginación -->
+            <mat-paginator
+                class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                [ngClass]="{ 'pointer-events-none': isLoading }"
+                [length]="totalItems"
+                [pageIndex]="pageNumber$.value - 1"
+                [pageSize]="pageSize$.value"
+                [pageSizeOptions]="[5, 10, 25, 100]"
+                [showFirstLastButtons]="true"
+                (page)="onPageChange($event)"
+            >
+            </mat-paginator>
+
+            <!-- Empty state -->
+            <div
+                *ngIf="(missingList$ | async)?.length === 0"
+                class="p-8 text-center"
+            >
+                <p class="text-secondary text-lg">
+                    No hay reporte de personas desaparecidas registradas.
+                    <br />
+                    Haz clic en "Agregar Reporte" para comenzar.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

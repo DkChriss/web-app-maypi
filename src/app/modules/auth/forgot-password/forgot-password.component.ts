@@ -1,6 +1,13 @@
 import { NgIf } from '@angular/common';
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormsModule, NgForm, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+    FormsModule,
+    NgForm,
+    ReactiveFormsModule,
+    UntypedFormBuilder,
+    UntypedFormGroup,
+    Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -14,16 +21,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
-    selector     : 'auth-forgot-password',
-    templateUrl  : './forgot-password.component.html',
+    selector: 'auth-forgot-password',
+    templateUrl: './forgot-password.component.html',
     encapsulation: ViewEncapsulation.None,
-    animations   : [
+    animations: [
         fuseAnimations,
         trigger('fadeIn', [
             transition(':enter', [
                 style({ opacity: 0 }),
-                animate('600ms ease-in', style({ opacity: 1 }))
-            ])
+                animate('600ms ease-in', style({ opacity: 1 })),
+            ]),
         ]),
         trigger('shake', [
             transition('* => error', [
@@ -32,19 +39,29 @@ import { trigger, transition, style, animate } from '@angular/animations';
                 animate('100ms', style({ transform: 'translateX(10px)' })),
                 animate('100ms', style({ transform: 'translateX(-10px)' })),
                 animate('100ms', style({ transform: 'translateX(10px)' })),
-                animate('100ms', style({ transform: 'translateX(0)' }))
-            ])
-        ])
+                animate('100ms', style({ transform: 'translateX(0)' })),
+            ]),
+        ]),
     ],
-    standalone   : true,
-    imports      : [NgIf, FuseAlertComponent, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressSpinnerModule, RouterLink, MatIconModule],
+    standalone: true,
+    imports: [
+        NgIf,
+        FuseAlertComponent,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatProgressSpinnerModule,
+        RouterLink,
+        MatIconModule,
+    ],
 })
-export class AuthForgotPasswordComponent implements OnInit
-{
+export class AuthForgotPasswordComponent implements OnInit {
     @ViewChild('forgotPasswordNgForm') forgotPasswordNgForm: NgForm;
 
     alert: { type: FuseAlertType; message: string } = {
-        type   : 'success',
+        type: 'success',
         message: '',
     };
     forgotPasswordForm: UntypedFormGroup;
@@ -55,10 +72,8 @@ export class AuthForgotPasswordComponent implements OnInit
      */
     constructor(
         private _authService: AuthService,
-        private _formBuilder: UntypedFormBuilder,
-    )
-    {
-    }
+        private _formBuilder: UntypedFormBuilder
+    ) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -67,8 +82,7 @@ export class AuthForgotPasswordComponent implements OnInit
     /**
      * On init
      */
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
         // Create the form
         this.forgotPasswordForm = this._formBuilder.group({
             email: ['', [Validators.required, Validators.email]],
@@ -82,11 +96,9 @@ export class AuthForgotPasswordComponent implements OnInit
     /**
      * Send the reset link
      */
-    sendResetLink(): void
-    {
+    sendResetLink(): void {
         // Return if the form is invalid
-        if (this.forgotPasswordForm.invalid)
-        {
+        if (this.forgotPasswordForm.invalid) {
             return;
         }
 
@@ -97,10 +109,10 @@ export class AuthForgotPasswordComponent implements OnInit
         this.showAlert = false;
 
         // Forgot password
-        this._authService.forgotPassword(this.forgotPasswordForm.get('email').value)
+        this._authService
+            .forgotPassword(this.forgotPasswordForm.get('email').value)
             .pipe(
-                finalize(() =>
-                {
+                finalize(() => {
                     // Re-enable the form
                     this.forgotPasswordForm.enable();
 
@@ -109,25 +121,25 @@ export class AuthForgotPasswordComponent implements OnInit
 
                     // Show the alert
                     this.showAlert = true;
-                }),
+                })
             )
             .subscribe(
-                (response) =>
-                {
+                (response) => {
                     // Set the alert
                     this.alert = {
-                        type   : 'success',
-                        message: 'Se ha enviado un enlace de recuperación a tu correo electrónico.',
+                        type: 'success',
+                        message:
+                            'Se ha enviado un enlace de recuperación a tu correo electrónico.',
                     };
                 },
-                (response) =>
-                {
+                (response) => {
                     // Set the alert
                     this.alert = {
-                        type   : 'error',
-                        message: 'No se encontró el correo electrónico. ¿Estás seguro de que ya eres miembro?',
+                        type: 'error',
+                        message:
+                            'No se encontró el correo electrónico. ¿Estás seguro de que ya eres miembro?',
                     };
-                },
+                }
             );
     }
 }

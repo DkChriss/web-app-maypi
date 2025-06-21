@@ -236,4 +236,9 @@ export class ContactSupportPageComponent implements OnInit, OnDestroy {
         }
     }
 
+    onPageChange(event) {
+        this.pageNumber$.next(event.pageIndex + 1)
+        this.pageSize$.next(event.pageSize)
+    }
+
 }

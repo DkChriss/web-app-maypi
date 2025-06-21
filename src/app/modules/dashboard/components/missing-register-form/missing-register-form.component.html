@@ -1,0 +1,151 @@
+<div class="p-6">
+    <h2 mat-dialog-title class="text-center text-2xl font-bold uppercase mb-4">
+        Registrar nuevo caso de desaparicion
+    </h2>
+
+    <mat-dialog-content>
+        <form [formGroup]="form.formGroup" (ngSubmit)="formSubmit()" novalidate>
+            <div class="grid grid-cols-1 gap-4 mt-2">
+                <div class="flex w-full">
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Nombre</mat-label>
+                        <input matInput name="name" formControlName="name" placeholder="Ingrese el nombre de la victima"
+                            required>
+                        <mat-error *ngIf="Form.name.invalid && (Form.name.dirty || Form.name.touched)">
+                            El nombre de la victima es requerido
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Apellido</mat-label>
+                        <input matInput name="last_name" formControlName="last_name"
+                            placeholder="Ingrese el apellido de la victima" required>
+                        <mat-error *ngIf="Form.last_name.invalid && (Form.last_name.dirty || Form.last_name.touched)">
+                            El apellido de la victima es requerido
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="flex w-full">
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Edad</mat-label>
+                        <input matInput name="age" formControlName="age" placeholder="Ingrese la edad de la victima"
+                            required>
+                        <mat-error *ngIf="Form.age.invalid && (Form.age.dirty || Form.age.touched)">
+                            La edad de la victima es requerido
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Genero</mat-label>
+                        <mat-select name="gender" formControlName="gender"
+                            placeholder="Seleccione el genero de la victima">
+                            <mat-option value="Masculino">Masculino</mat-option>
+                            <mat-option value="Femenino">Femenino</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="Form.gender.invalid && (Form.gender.dirty || Form.last_name.touched)">
+                            Seleccione el genero de la victima es requerido
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="flex w-full">
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Lugar de desaparicion</mat-label>
+                        <input matInput name="place_of_disappearance" formControlName="place_of_disappearance"
+                            placeholder="Ingrese el lugar de desaparicion de la victima" required>
+                        <mat-error
+                            *ngIf="Form.place_of_disappearance.invalid && (Form.place_of_disappearance.dirty || Form.place_of_disappearance.touched)">
+                            El lugar de desaparicion de la victima es requerido
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="flex w-full">
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Fecha de nacimiento</mat-label>
+                        <input matInput name="birthdate" formControlName="birthdate"
+                            [matDatepicker]="birthdayDatepicker"
+                            placeholder="Ingrese la fecha de nacimiento de la victima" required>
+                        <mat-error *ngIf="Form.birthdate.invalid && (Form.birthdate.dirty || Form.birthdate.touched)">
+                            La fecha de nacimiento de la victima es requerido
+                        </mat-error>
+                        <mat-datepicker-toggle matSuffix [for]="birthdayDatepicker">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #birthdayDatepicker></mat-datepicker>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Fecha de desaparición</mat-label>
+                        <input matInput name="disappearance_date" formControlName="disappearance_date"
+                            [matDatepicker]="disappearance_date"
+                            placeholder="Ingrese la fecha de desaparicion de la victima" required>
+                        <mat-error
+                            *ngIf="Form.disappearance_date.invalid && (Form.disappearance_date.dirty || Form.disappearance_date.touched)">
+                            La fecha de desaparicion de la victima es requerido
+                        </mat-error>
+                        <mat-datepicker-toggle matSuffix [for]="disappearance_date">
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #disappearance_date></mat-datepicker>
+                    </mat-form-field>
+                </div>
+                <div class="flex w-full">
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Descripcion</mat-label>
+                        <input matInput name="description" formControlName="description"
+                            placeholder="Ingrese una descripcion de la victima" required>
+                        <mat-error
+                            *ngIf="Form.description.invalid && (Form.description.dirty || Form.description.touched)">
+                            La descripcion de la victima es requerido
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Caracteristicas</mat-label>
+                        <input matInput name="characteristics" formControlName="characteristics"
+                            placeholder="Ingrese las caracteristicas de la victima" required>
+                        <mat-error
+                            *ngIf="Form.characteristics.invalid && (Form.characteristics.dirty || Form.characteristics.touched)">
+                            Las caracteristicas de la victima es requerido
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="flex w-full">
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Nombre del reportante</mat-label>
+                        <input matInput name="reporter_name" formControlName="reporter_name"
+                            placeholder="Ingrese el nombre del reportante de la victima" required>
+                        <mat-error
+                            *ngIf="Form.reporter_name.invalid && (Form.reporter_name.dirty || Form.reporter_name.touched)">
+                            El nombre del reportante de la victima es requerido
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Celular del reportante</mat-label>
+                        <input matInput name="reporter_phone" formControlName="reporter_phone"
+                            placeholder="Ingrese el celular del reportante de la victima" required>
+                        <mat-error
+                            *ngIf="Form.reporter_phone.invalid && (Form.reporter_phone.dirty || Form.reporter_phone.touched)">
+                            El celular del reportante de la victima es requerido
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="flex w-full">
+                    <div class="flex-auto m-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Imagen del Perfil
+                            del Desaparecido</label>
+                        <input type="file" formControlName="photo"
+                            class="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-700"
+                            (change)="onFileChange($event, 'photo')" accept="image/jpeg,image/png,image/gif">
+                    </div>
+                    <div class="flex-auto m-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Imagen del evento
+                            del Desaparecido</label>
+                        <input type="file" formControlName="event_photo"
+                            class="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-700"
+                            (change)="onFileChange($event, 'event_photo')" accept="image/jpeg,image/png,image/gif">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="flex justify-center">
+        <button mat-flat-button color="primary" (click)="formSubmit()" class="w-full rounded-none">
+            Registrar
+        </button>
+    </mat-dialog-actions>
+</div>

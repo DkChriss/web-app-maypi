@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { UserRole, UserStore, UserUpdate } from '../models/user';
+import { RoleStore, RoleUpdate } from '../models/role';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'environments/environment';
 
 @Injectable({
     providedIn: 'root',
 })
-export class UserService {
+export class RoleService {
     constructor(private _httpClient: HttpClient) {}
 
     list(page: number = 1, size: number = 10, search: string = '') {
@@ -21,37 +21,32 @@ export class UserService {
             params = new HttpParams().set('page', page).set('size', size);
         }
 
-        return this._httpClient.get(`${environment.baseUrl}/users`, { params });
+        return this._httpClient.get(`${environment.baseUrl}/roles`, {
+            params,
+        });
     }
 
-    store(userStore: FormData) {
-        return this._httpClient.post<FormData>(
-            `${environment.baseUrl}/users`,
-            userStore
+    store(roleStore: RoleStore) {
+        return this._httpClient.post<RoleStore>(
+            `${environment.baseUrl}/roles`,
+            roleStore
         );
     }
 
     show(id: number) {
-        return this._httpClient.get(`${environment.baseUrl}/users/${id}`);
+        return this._httpClient.get(`${environment.baseUrl}/roles/${id}`);
     }
 
-    update(id: number, userUpdate: FormData) {
-        return this._httpClient.put<FormData>(
-            `${environment.baseUrl}/users/${id}`,
-            userUpdate
+    update(id: number, roleUpdate: RoleUpdate) {
+        return this._httpClient.put<RoleUpdate>(
+            `${environment.baseUrl}/roles/${id}`,
+            roleUpdate
         );
     }
 
     delete(id: number) {
         return this._httpClient.delete<number>(
-            `${environment.baseUrl}/users/${id}`
-        );
-    }
-
-    assignRoles(userRoles: UserRole) {
-        return this._httpClient.post<UserRole>(
-            `${environment.baseUrl}/users/assign-roles`,
-            userRoles
+            `${environment.baseUrl}/roles/${id}`
         );
     }
 }

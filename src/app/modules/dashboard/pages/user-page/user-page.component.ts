@@ -1,16 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MissingService } from '../../services/missing.service';
-import {
-    FormControl,
-    FormGroup,
-    FormsModule,
-    ReactiveFormsModule,
-    UntypedFormBuilder,
-    UntypedFormGroup,
-    Validators,
-} from '@angular/forms';
-import { FuseConfirmationService } from '@fuse/services/confirmation';
 import {
     BehaviorSubject,
     combineLatest,
@@ -20,24 +9,32 @@ import {
     switchMap,
     tap,
 } from 'rxjs';
-import { MatSelectModule } from '@angular/material/select';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { UserService } from '../../services/user.service';
+import { FuseConfirmationService } from '@fuse/services/confirmation';
+import {
+    FormsModule,
+    ReactiveFormsModule,
+    UntypedFormBuilder,
+    UntypedFormGroup,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { QuillModule } from 'ngx-quill';
-import { Missing, StatusMissingEnum } from '../../models/missing';
-import { MissingRegisterFormComponent } from '../../components/missing-register-form/missing-register-form.component';
-import { MissingEditFormComponent } from '../../components/missing-edit-form/missing-edit-form.component';
-import { MissingChangeStatusFormComponent } from '../../components/missing-change-status-form/missing-change-status-form.component';
-import { MissingImageModalComponent } from '../../components/missing-image-modal/missing-image-modal.component';
+import { UserRegisterFormComponent } from '../../components/user-register-form/user-register-form.component';
+import { User } from '../../models/user';
+import { UserEditFormComponent } from '../../components/user-edit-form/user-edit-form.component';
+import { UserAssignRolesFormComponent } from '../../components/user-assign-roles-form/user-assign-roles-form.component';
+import { UserAssignPermissionsFormComponent } from '../../components/user-assign-permissions-form/user-assign-permissions-form.component';
 
 @Component({
-    selector: 'app-missing-page',
+    selector: 'app-user-page',
     standalone: true,
     imports: [
         CommonModule,
@@ -55,28 +52,15 @@ import { MissingImageModalComponent } from '../../components/missing-image-modal
         MatDialogModule,
         MatSelectModule,
     ],
-    templateUrl: './missing-page.component.html',
-    styleUrl: './missing-page.component.scss',
+    templateUrl: './user-page.component.html',
+    styleUrl: './user-page.component.scss',
 })
-export class MissingPageComponent implements OnInit, OnDestroy {
-    statusLabel: { [key: string]: string } = {
-        pending: 'Pendiente',
-        progress: 'En Progreso',
-        suspended: 'Suspendido',
-        resumed: 'Reanudado',
-        completed: 'Completado',
-    };
-    displayedColumns: string[] = [
-        'name',
-        'location',
-        'phone',
-        'status_missing',
-        'actions',
-    ];
+export class UserPageComponent implements OnInit {
+    displayedColumns: string[] = ['name', 'email', 'phone', 'code', 'actions'];
     configForm: UntypedFormGroup;
-    isLoading = true;
+    isLoading: boolean = true;
 
-    missingTable = {
+    userTable = {
         reload: new BehaviorSubject<void>(null),
     };
 
@@ -85,16 +69,16 @@ export class MissingPageComponent implements OnInit, OnDestroy {
     searchBy$ = new BehaviorSubject<string>('');
     totalItems = 0;
 
-    missingList$ = combineLatest([
+    userList$ = combineLatest([
         this.pageSize$,
         this.pageNumber$,
         this.searchBy$,
-        this.missingTable.reload,
+        this.userTable.reload,
     ]).pipe(
         debounceTime(300),
         distinctUntilChanged(),
         switchMap(() =>
-            this._missingService
+            this._userService
                 .list(
                     parseInt(this.pageNumber$.value.toString()),
                     parseInt(this.pageSize$.value.toString()),
@@ -112,7 +96,7 @@ export class MissingPageComponent implements OnInit, OnDestroy {
 
     constructor(
         private dialog: MatDialog,
-        private _missingService: MissingService,
+        private _userService: UserService,
         private _fuseConfirmationService: FuseConfirmationService,
         private _formBuilder: UntypedFormBuilder
     ) {}
@@ -120,9 +104,9 @@ export class MissingPageComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.isLoading = false;
         this.configForm = this._formBuilder.group({
-            title: 'Eliminar reporte de desaparicion',
+            title: 'Eliminar usuario',
             message:
-                'Esta seguro de eliminar el reporte de desaparicion? <span class="font-medium">Esta accion no puede ser reversible!</span>',
+                'Esta seguro de eliminar el usuario? <span class="font-medium">Esta accion no puede ser reversible!</span>',
             icon: this._formBuilder.group({
                 show: true,
                 name: 'heroicons_outline:exclamation-triangle',
@@ -143,32 +127,30 @@ export class MissingPageComponent implements OnInit, OnDestroy {
         });
     }
 
-    ngOnDestroy(): void {}
-
     store(): void {
-        const dialogRef = this.dialog.open(MissingRegisterFormComponent, {
+        const dialogRef = this.dialog.open(UserRegisterFormComponent, {
             width: '70%',
             height: 'auto',
             disableClose: false,
         });
 
         dialogRef.afterClosed().subscribe((result) => {
-            this.missingTable.reload.next();
+            this.userTable.reload.next();
         });
     }
 
-    update(missing: Missing): void {
-        const dialogRef = this.dialog.open(MissingEditFormComponent, {
+    update(user: User): void {
+        const dialogRef = this.dialog.open(UserEditFormComponent, {
             width: '70%',
             height: 'auto',
             disableClose: false,
             data: {
-                missing: missing,
+                user: user,
             },
         });
 
         dialogRef.afterClosed().subscribe((result) => {
-            this.missingTable.reload.next();
+            this.userTable.reload.next();
         });
     }
 
@@ -180,9 +162,9 @@ export class MissingPageComponent implements OnInit, OnDestroy {
 
             dialogRef.afterClosed().subscribe((result) => {
                 if (result == 'confirmed') {
-                    this._missingService.delete(id).subscribe({
+                    this._userService.delete(id).subscribe({
                         next: (resp) => {
-                            this.missingTable.reload.next();
+                            this.userTable.reload.next();
                         },
                         error: (error) => {
                             console.log(error);
@@ -193,50 +175,38 @@ export class MissingPageComponent implements OnInit, OnDestroy {
         }
     }
 
-    onPageChange(event) {
-        this.pageNumber$.next(event.pageIndex + 1);
-        this.pageSize$.next(event.pageSize);
-    }
-
-    change(id: number) {
-        const dialogRef = this.dialog.open(MissingChangeStatusFormComponent, {
+    assignRoles(id: number) {
+        const dialogRef = this.dialog.open(UserAssignRolesFormComponent, {
             width: '40%',
             height: 'auto',
             disableClose: false,
             data: {
-                id: id,
+                user: id,
             },
         });
 
         dialogRef.afterClosed().subscribe((result) => {
-            this.missingTable.reload.next();
+            this.userTable.reload.next();
         });
     }
 
-    showImages(id: number) {
-        if (id) {
-            this._missingService.showImages(id).subscribe({
-                next: (response) => {
-                    const dialogRef = this.dialog.open(
-                        MissingImageModalComponent,
-                        {
-                            width: '50%',
-                            height: 'auto',
-                            disableClose: false,
-                            data: {
-                                images: response,
-                            },
-                        }
-                    );
+    assignPermissions(id: number) {
+        const dialogRef = this.dialog.open(UserAssignPermissionsFormComponent, {
+            width: '40%',
+            height: 'auto',
+            disableClose: false,
+            data: {
+                user: id,
+            },
+        });
 
-                    dialogRef.afterClosed().subscribe((result) => {
-                        this.missingTable.reload.next();
-                    });
-                },
-                error: (error) => {
-                    console.log(error);
-                },
-            });
-        }
+        dialogRef.afterClosed().subscribe((result) => {
+            this.userTable.reload.next();
+        });
+    }
+
+    onPageChange(event) {
+        this.pageNumber$.next(event.pageIndex + 1);
+        this.pageSize$.next(event.pageSize);
     }
 }

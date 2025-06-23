@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
-import { UserRole, UserStore, UserUpdate } from '../models/user';
+import {
+    UserPermission,
+    UserRole,
+    UserStore,
+    UserUpdate,
+} from '../models/user';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'environments/environment';
 
@@ -52,6 +57,13 @@ export class UserService {
         return this._httpClient.post<UserRole>(
             `${environment.baseUrl}/users/assign-roles`,
             userRoles
+        );
+    }
+
+    assignPermissions(userPermissions: UserPermission) {
+        return this._httpClient.post<UserRole>(
+            `${environment.baseUrl}/users/assign-permissions`,
+            userPermissions
         );
     }
 }

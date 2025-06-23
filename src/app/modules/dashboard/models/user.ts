@@ -53,3 +53,8 @@ export interface UserRole {
     user_id: number;
     roles_ids: Array<number>;
 }
+
+export interface UserPermission {
+    user_id: number;
+    permissions_ids: Array<number>;
+}

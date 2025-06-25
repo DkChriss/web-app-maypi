@@ -32,6 +32,7 @@ import { User } from '../../models/user';
 import { UserEditFormComponent } from '../../components/user-edit-form/user-edit-form.component';
 import { UserAssignRolesFormComponent } from '../../components/user-assign-roles-form/user-assign-roles-form.component';
 import { UserAssignPermissionsFormComponent } from '../../components/user-assign-permissions-form/user-assign-permissions-form.component';
+import { UserShowModalComponent } from '../../components/user-show-modal/user-show-modal.component';
 
 @Component({
     selector: 'app-user-page',
@@ -202,6 +203,28 @@ export class UserPageComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe((result) => {
             this.userTable.reload.next();
+        });
+    }
+
+    showInfoUser(id: number) {
+        let dialogRef;
+        this._userService.show(id).subscribe({
+            next: (resp: any) => {
+                dialogRef = this.dialog.open(UserShowModalComponent, {
+                    width: '40%',
+                    height: 'auto',
+                    disableClose: false,
+                    data: {
+                        user: resp.data,
+                    },
+                });
+                dialogRef.afterClosed().subscribe((result) => {
+                    this.userTable.reload.next();
+                });
+            },
+            error: (error) => {
+                console.log(error);
+            },
         });
     }
 

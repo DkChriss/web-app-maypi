@@ -260,6 +260,14 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 roles: [2],
                 exactMatch: true,
             },
+            {
+                id: 'apps.help-center.home',
+                title: 'Reporte de solicitudes de desaparecidos',
+                type: 'basic',
+                link: '/dashboards/reports',
+                roles: [2],
+                exactMatch: true,
+            },
         ],
     },
 ];

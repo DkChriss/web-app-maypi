@@ -1,0 +1,25 @@
+.inventory-grid {
+    grid-template-columns: 1fr auto 100px;
+    display: grid;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+@screen sm {
+    .inventory-grid {
+        grid-template-columns: 1fr auto 1fr 100px;
+    }
+}
+
+@screen md {
+    .inventory-grid {
+        grid-template-columns: 1fr 1fr auto 100px;
+    }
+}
+
+@screen lg {
+    .inventory-grid {
+        grid-template-columns: 30vh auto 112px 96px 96px 72px;
+    }
+}

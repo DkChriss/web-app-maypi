@@ -7,6 +7,7 @@ import { DevicePageComponent } from './pages/device-page/device-page.component';
 import { EmergencyContactPageComponent } from './pages/emergency-contact-page/emergency-contact-page.component';
 import { MissingPageComponent } from './pages/missing-page/missing-page.component';
 import { UserPageComponent } from './pages/user-page/user-page.component';
+import { ReportPageComponent } from './pages/report-page/report-page.component';
 
 export default [
     {
@@ -40,5 +41,9 @@ export default [
     {
         path: 'missing',
         component: MissingPageComponent,
+    },
+    {
+        path: 'reports',
+        component: ReportPageComponent,
     },
 ] as Routes;

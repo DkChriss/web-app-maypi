@@ -10,7 +10,9 @@
             <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
         </div>
         <!-- Title -->
-        <div class="text-4xl font-extrabold tracking-tight">Desaparecidos</div>
+        <div class="text-4xl font-extrabold tracking-tight">
+            Reportes de personas desaparecidas
+        </div>
 
         <!-- Actions -->
         <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
@@ -28,7 +30,7 @@
                     matInput
                     (input)="searchBy$.next($event.target.value)"
                     [autocomplete]="'off'"
-                    [placeholder]="'Buscar solicitudes'"
+                    [placeholder]="'Buscar Reportes'"
                 />
             </mat-form-field>
 
@@ -40,86 +42,76 @@
                 (click)="store()"
             >
                 <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
-                <span class="ml-2 mr-1">Registrar persona desaparecido</span>
+                <span class="ml-2 mr-1"
+                    >Registrar reporte de persona desaparecida</span
+                >
             </button>
         </div>
     </div>
     <!-- Main -->
     <div class="flex-auto p-6 sm:p-10">
         <div class="bg-card shadow rounded-lg overflow-hidden">
-            <table mat-table [dataSource]="missingList$ | async" class="w-full">
-                <!-- Device Name Column -->
+            <table mat-table [dataSource]="reportList$ | async" class="w-full">
+                <!-- Name -->
                 <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef>Nombre</th>
-                    <td mat-cell *matCellDef="let missing">
-                        {{ missing.name }}
+                    <th mat-header-cell *matHeaderCellDef>
+                        Nombre del reportante
+                    </th>
+                    <td mat-cell *matCellDef="let report">
+                        {{ report.name }}
                     </td>
                 </ng-container>
 
-                <!-- Device ID Column -->
+                <!-- Email -->
+                <ng-container matColumnDef="email">
+                    <th mat-header-cell *matHeaderCellDef>
+                        Correo del reportante
+                    </th>
+                    <td mat-cell *matCellDef="let report">
+                        {{ report.email }}
+                    </td>
+                </ng-container>
+
+                <!--Phone -->
+                <ng-container matColumnDef="phone">
+                    <th mat-header-cell *matHeaderCellDef>
+                        Telefono del reportante
+                    </th>
+                    <td mat-cell *matCellDef="let report">
+                        {{ report.phone }}
+                    </td>
+                </ng-container>
+                <!--Location -->
                 <ng-container matColumnDef="location">
                     <th mat-header-cell *matHeaderCellDef>Ubicacion</th>
-                    <td mat-cell *matCellDef="let missing">
-                        {{ missing.place_of_disappearance }}
+                    <td mat-cell *matCellDef="let report">
+                        {{ report.location }}
                     </td>
                 </ng-container>
-
-                <!--STATUS -->
-                <ng-container matColumnDef="phone">
-                    <th mat-header-cell *matHeaderCellDef>Telefono</th>
-                    <td mat-cell *matCellDef="let missing">
-                        {{ missing.reporter_phone }}
+                <!--Descripcion -->
+                <ng-container matColumnDef="description">
+                    <th mat-header-cell *matHeaderCellDef>Descripcion</th>
+                    <td mat-cell *matCellDef="let report">
+                        {{ report.description }}
                     </td>
                 </ng-container>
-                <!-- status -->
-                <ng-container matColumnDef="status_missing">
-                    <th mat-header-cell *matHeaderCellDef>Estado</th>
-                    <td mat-cell *matCellDef="let missing">
-                        <span
-                            class="px-2 py-1 rounded-full text-xs font-semibold"
-                            [ngClass]="{
-                                'bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-gray-50':
-                                    missing.status_missing === 'pending',
-                                'bg-blue-200 text-blue-800 dark:bg-blue-600 dark:text-blue-50':
-                                    missing.status_missing === 'progress',
-                                'bg-yellow-200 text-yellow-800 dark:bg-yellow-600 dark:text-yellow-50':
-                                    missing.status_missing === 'suspended',
-                                'bg-purple-200 text-purple-800 dark:bg-purple-600 dark:text-purple-50':
-                                    missing.status_missing === 'resumed',
-                                'bg-green-200 text-green-800 dark:bg-green-600 dark:text-green-50':
-                                    missing.status_missing === 'completed'
-                            }"
-                        >
-                            {{ statusLabel[missing.status_missing] }}
-                        </span>
+                <!--Date -->
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                    <td mat-cell *matCellDef="let report">
+                        {{ report.date }}
                     </td>
                 </ng-container>
                 <!-- Actions Column -->
                 <ng-container matColumnDef="actions">
                     <th mat-header-cell *matHeaderCellDef>Acciones</th>
-                    <td mat-cell *matCellDef="let missing">
+                    <td mat-cell *matCellDef="let report">
                         <div class="flex space-x-2">
-                            <button mat-icon-button (click)="update(missing)">
+                            <button mat-icon-button (click)="update(report)">
                                 <mat-icon>edit</mat-icon>
                             </button>
-                            <button
-                                mat-icon-button
-                                (click)="delete(missing.id)"
-                            >
+                            <button mat-icon-button (click)="delete(report.id)">
                                 <mat-icon>delete</mat-icon>
-                            </button>
-                            <button
-                                mat-icon-button
-                                *ngIf="missing.status_missing != 'completed'"
-                                (click)="change(missing.id)"
-                            >
-                                <mat-icon>track_changes</mat-icon>
-                            </button>
-                            <button
-                                mat-icon-button
-                                (click)="showImages(missing.id)"
-                            >
-                                <mat-icon>image</mat-icon>
                             </button>
                         </div>
                     </td>
@@ -147,13 +139,14 @@
 
             <!-- Empty state -->
             <div
-                *ngIf="(missingList$ | async)?.length === 0"
+                *ngIf="(reportList$ | async)?.length === 0"
                 class="p-8 text-center"
             >
                 <p class="text-secondary text-lg">
                     No hay reporte de personas desaparecidas registradas.
                     <br />
-                    Haz clic en "Agregar Reporte" para comenzar.
+                    Haz clic en "Registrar reporte de persona desaparecida" para
+                    comenzar.
                 </p>
             </div>
         </div>

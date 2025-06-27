@@ -15,6 +15,7 @@ export type ReportUpdate = Omit<Report, 'id' | 'user_id'> &
     Partial<
         Pick<
             Report,
+            | 'user_id'
             | 'missing_id'
             | 'name'
             | 'email'

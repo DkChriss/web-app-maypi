@@ -127,18 +127,20 @@
                             desaparecida
                         </mat-error>
                     </mat-form-field>
-                    <mat-form-field appearance="outline" class="flex-auto m-2">
-                        <mat-label>Fecha del último avistamiento</mat-label>
+                    <div class="flex-auto m-2">
+                        <label
+                            for="date"
+                            class="block text-sm font-medium text-[#2E4053]"
+                            >Fecha y Hora del Avistamiento *</label
+                        >
                         <input
-                            matInput
-                            [matDatepicker]="date"
-                            [formControlName]="'date'"
-                            [placeholder]="'Seleccione la fecha'"
+                            type="datetime-local"
+                            id="date"
+                            formControlName="date"
+                            class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFC107]"
+                            aria-label="Seleccione fecha y hora del avistamiento"
+                            required
                         />
-                        <mat-datepicker-toggle matSuffix [for]="date">
-                        </mat-datepicker-toggle>
-                        <mat-datepicker #date></mat-datepicker>
-
                         <mat-error
                             *ngIf="
                                 Form.date.invalid &&
@@ -148,7 +150,7 @@
                             La fecha y hora en que se vio ultima vez a la
                             victima
                         </mat-error>
-                    </mat-form-field>
+                    </div>
                 </div>
             </div>
         </form>

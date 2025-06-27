@@ -1,0 +1,26 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { environment } from 'environments/environment.development';
+
+@Injectable({
+    providedIn: 'root',
+})
+export class PublicService {
+    constructor(private _httpClient: HttpClient) {}
+
+    listMissing(page: number = 1, size: number = 10, search: string = '') {
+        let params: any;
+        if (search != '') {
+            params = new HttpParams()
+                .set('page', page)
+                .set('size', size)
+                .set('search', search);
+        } else {
+            params = new HttpParams().set('page', page).set('size', size);
+        }
+
+        return this._httpClient.get(`${environment.baseUrl}/public/missing`, {
+            params,
+        });
+    }
+}

@@ -23,4 +23,11 @@ export class PublicService {
             params,
         });
     }
+
+    saveMissing(formData: FormData) {
+        return this._httpClient.post<FormData>(
+            `${environment.baseUrl}/public/missing`,
+            formData
+        );
+    }
 }

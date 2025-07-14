@@ -12,13 +12,28 @@ import {
     switchMap,
     tap,
 } from 'rxjs';
+import {
+    FormControl,
+    FormGroup,
+    FormsModule,
+    ReactiveFormsModule,
+    Validators,
+} from '@angular/forms';
+import { ContactSupportStore } from 'app/modules/dashboard/models/contact-support';
 
 @Component({
     selector: 'landing-home',
     templateUrl: './home.component.html',
     encapsulation: ViewEncapsulation.None,
     standalone: true,
-    imports: [MatButtonModule, RouterLink, MatIconModule, CommonModule],
+    imports: [
+        MatButtonModule,
+        RouterLink,
+        MatIconModule,
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+    ],
 })
 export class LandingHomeComponent implements OnInit {
     // Propiedad para controlar la visibilidad del menú móvil
@@ -98,17 +113,54 @@ export class LandingHomeComponent implements OnInit {
     }
 
     nextBlock() {
-        if ((this.currentBlock + 1) * 6 < this.persons_list.length) {
-            this.currentBlock++;
+        if (this.hasNextPage) {
+            this.pageNumber$.next(this.pageNumber$.value - 1);
         }
     }
 
     prevBlock() {
-        if (this.currentBlock > 0) {
-            this.currentBlock--;
+        if (this.hasPreviousPage) {
+            this.pageNumber$.next(this.pageNumber$.value + 1);
         }
     }
 
+    contactSupportForm = {
+        submitted: false,
+        submitting: false,
+        formGroup: new FormGroup({
+            user_id: new FormControl<number>(null),
+            name: new FormControl<string>('', Validators.required),
+            email: new FormControl<string>('', [
+                Validators.required,
+                Validators.email,
+            ]),
+            title: new FormControl<string>('', Validators.required),
+            message: new FormControl<string>('', Validators.required),
+        }),
+    };
+
+    get Form() {
+        return this.contactSupportForm.formGroup.controls;
+    }
+
+    formSubmit() {
+        console.log(this.contactSupportForm.formGroup.getRawValue());
+        this.contactSupportForm.submitted = true;
+        if (this.contactSupportForm.formGroup.valid) {
+            this.contactSupportForm.submitting = true;
+            let newContactSupport: ContactSupportStore =
+                this.contactSupportForm.formGroup.getRawValue();
+            this._publicService
+                .storeContactSupport(newContactSupport)
+                .subscribe({
+                    next: (res: any) => window.location.reload(),
+                    error: (error) => console.log(error),
+                });
+        }
+    }
+
+    hasNextPage: boolean = false;
+    hasPreviousPage: boolean = false;
     pageSize$ = new BehaviorSubject<number>(10);
     pageNumber$ = new BehaviorSubject<number>(1);
     missingList$ = combineLatest([this.pageSize$, this.pageNumber$]).pipe(
@@ -123,6 +175,8 @@ export class LandingHomeComponent implements OnInit {
                 .pipe(
                     tap((res: any) => {
                         console.log(res);
+                        this.hasNextPage = res.links.next != null;
+                        this.hasPreviousPage = res.links.previous != null;
                     })
                 )
         )

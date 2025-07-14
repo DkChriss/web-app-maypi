@@ -502,6 +502,7 @@
 
                     <div class="flex justify-center mt-8">
                         <button
+                            *ngIf="hasPreviousPage"
                             (click)="prevBlock()"
                             [disabled]="currentBlock === 0"
                             class="border border-[#2E4053] text-[#2E4053] hover:bg-[#2E4053] hover:text-white px-4 py-2 rounded-md mr-2 transition-colors"
@@ -511,6 +512,7 @@
                             &laquo; Anterior
                         </button>
                         <button
+                            *ngIf="hasNextPage"
                             (click)="nextBlock()"
                             [disabled]="
                                 (currentBlock + 1) * 3 >= persons_list.length
@@ -953,14 +955,20 @@
                             brevedad.
                         </p>
 
-                        <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <form
+                            class="grid grid-cols-1 md:grid-cols-2 gap-6"
+                            [formGroup]="contactSupportForm.formGroup"
+                            (ngSubmit)="formSubmit()"
+                            novalidate
+                        >
                             <div class="space-y-2">
-                                <label for="nombre" class="text-sm font-medium"
+                                <label for="name" class="text-sm font-medium"
                                     >Nombre</label
                                 >
                                 <input
                                     type="text"
-                                    id="nombre"
+                                    id="name"
+                                    formControlName="name"
                                     class="w-full p-2 border rounded-md"
                                     placeholder="Tu nombre completo"
                                     aria-label="Ingresa tu nombre completo"
@@ -973,30 +981,33 @@
                                 <input
                                     type="email"
                                     id="email"
+                                    formControlName="email"
                                     class="w-full p-2 border rounded-md"
                                     placeholder="tucorreo@ejemplo.com"
                                     aria-label="Ingresa tu correo electrónico"
                                 />
                             </div>
                             <div class="space-y-2 md:col-span-2">
-                                <label for="asunto" class="text-sm font-medium"
+                                <label for="title" class="text-sm font-medium"
                                     >Asunto</label
                                 >
                                 <input
                                     type="text"
-                                    id="asunto"
+                                    id="title"
+                                    formControlName="title"
                                     class="w-full p-2 border rounded-md"
                                     placeholder="Asunto de tu mensaje"
                                     aria-label="Ingresa el asunto de tu mensaje"
                                 />
                             </div>
                             <div class="space-y-2 md:col-span-2">
-                                <label for="mensaje" class="text-sm font-medium"
+                                <label for="message" class="text-sm font-medium"
                                     >Mensaje</label
                                 >
                                 <textarea
-                                    id="mensaje"
+                                    id="message"
                                     rows="4"
+                                    formControlName="message"
                                     class="w-full p-2 border rounded-md"
                                     placeholder="Escribe tu mensaje aquí"
                                     aria-label="Escribe tu mensaje"
@@ -1007,6 +1018,7 @@
                                     type="submit"
                                     class="w-full bg-[#2E4053] text-white hover:bg-[#2E4053]/90 py-3 rounded-md transition-colors"
                                     aria-label="Enviar mensaje de contacto"
+                                    (click)="formSubmit()"
                                     title="Enviar mensaje"
                                 >
                                     Enviar mensaje

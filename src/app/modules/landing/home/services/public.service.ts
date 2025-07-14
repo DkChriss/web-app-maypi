@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ContactSupportStore } from 'app/modules/dashboard/models/contact-support';
 import { environment } from 'environments/environment.development';
 
 @Injectable({
@@ -89,6 +90,13 @@ export class PublicService {
             {
                 params,
             }
+        );
+    }
+
+    storeContactSupport(contactSupportStore: ContactSupportStore) {
+        return this._httpClient.post<ContactSupportStore>(
+            `${environment.baseUrl}/public/contact-support`,
+            contactSupportStore
         );
     }
 }

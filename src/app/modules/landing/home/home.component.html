@@ -332,69 +332,19 @@
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div
+                    class="grid grid-cols-1 md:grid-cols-3 gap-8"
+                    *ngIf="guideList$ | async as guideList"
+                >
                     <div
                         class="border-2 border-[#F2F2F2] hover:border-[#FFC107] transition-colors rounded-lg p-6"
+                        *ngFor="let guide of guideList.data; let i = index"
                     >
-                        <div
-                            class="w-12 h-12 rounded-full bg-[#FFC107]/20 flex items-center justify-center mb-4"
-                        >
-                            <mat-icon
-                                fontIcon="people"
-                                class="text-[#FFC107]"
-                            ></mat-icon>
-                        </div>
                         <h3 class="text-xl text-[#2E4053] font-bold mb-2">
-                            Reporta
+                            {{ guide.title }}
                         </h3>
                         <p class="text-gray-600">
-                            Crea un perfil detallado con información y
-                            fotografías recientes de la persona desaparecida.
-                            Cuanta más información proporciones, mayores serán
-                            las posibilidades de éxito.
-                        </p>
-                    </div>
-
-                    <div
-                        class="border-2 border-[#F2F2F2] hover:border-[#FFC107] transition-colors rounded-lg p-6"
-                    >
-                        <div
-                            class="w-12 h-12 rounded-full bg-[#FFC107]/20 flex items-center justify-center mb-4"
-                        >
-                            <mat-icon
-                                fontIcon="share"
-                                class="text-[#FFC107]"
-                            ></mat-icon>
-                        </div>
-                        <h3 class="text-xl text-[#2E4053] font-bold mb-2">
-                            Difunde
-                        </h3>
-                        <p class="text-gray-600">
-                            La información se comparte automáticamente con
-                            autoridades, organizaciones colaboradoras y
-                            comunidades. También puedes compartir en redes
-                            sociales para ampliar el alcance.
-                        </p>
-                    </div>
-
-                    <div
-                        class="border-2 border-[#F2F2F2] hover:border-[#FFC107] transition-colors rounded-lg p-6"
-                    >
-                        <div
-                            class="w-12 h-12 rounded-full bg-[#FFC107]/20 flex items-center justify-center mb-4"
-                        >
-                            <mat-icon
-                                fontIcon="database"
-                                class="text-[#FFC107]"
-                            ></mat-icon>
-                        </div>
-                        <h3 class="text-xl text-[#2E4053] font-bold mb-2">
-                            Colabora
-                        </h3>
-                        <p class="text-gray-600">
-                            Recibe alertas y actualizaciones en tiempo real. La
-                            comunidad puede aportar información valiosa que
-                            ayude a localizar a la persona desaparecida.
+                            {{ guide.content }}
                         </p>
                     </div>
                 </div>

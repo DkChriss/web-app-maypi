@@ -30,4 +30,65 @@ export class PublicService {
             formData
         );
     }
+
+    listCategoryFaqs(page: number = 1, size: number = 10, search: string = '') {
+        let params: any;
+        if (search != '') {
+            params = new HttpParams()
+                .set('page', page)
+                .set('size', size)
+                .set('search', search);
+        } else {
+            params = new HttpParams().set('page', page).set('size', size);
+        }
+
+        return this._httpClient.get(
+            `${environment.baseUrl}/public/list-category-faqs`,
+            {
+                params,
+            }
+        );
+    }
+
+    listCategoryGuides(
+        page: number = 1,
+        size: number = 10,
+        search: string = ''
+    ) {
+        let params: any;
+        if (search != '') {
+            params = new HttpParams()
+                .set('page', page)
+                .set('size', size)
+                .set('search', search);
+        } else {
+            params = new HttpParams().set('page', page).set('size', size);
+        }
+
+        return this._httpClient.get(
+            `${environment.baseUrl}/public/list-category-guides`,
+            {
+                params,
+            }
+        );
+    }
+
+    listGuides(page: number = 1, size: number = 10, search: string = '') {
+        let params: any;
+        if (search != '') {
+            params = new HttpParams()
+                .set('page', page)
+                .set('size', size)
+                .set('search', search);
+        } else {
+            params = new HttpParams().set('page', page).set('size', size);
+        }
+
+        return this._httpClient.get(
+            `${environment.baseUrl}/public/list-guides`,
+            {
+                params,
+            }
+        );
+    }
 }

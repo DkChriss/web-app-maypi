@@ -108,6 +108,7 @@ export class LandingHomeComponent implements OnInit {
             this.currentBlock--;
         }
     }
+
     pageSize$ = new BehaviorSubject<number>(10);
     pageNumber$ = new BehaviorSubject<number>(1);
     missingList$ = combineLatest([this.pageSize$, this.pageNumber$]).pipe(
@@ -118,6 +119,28 @@ export class LandingHomeComponent implements OnInit {
                 .listMissing(
                     parseInt(this.pageNumber$.value.toString()),
                     parseInt(this.pageSize$.value.toString())
+                )
+                .pipe(
+                    tap((res: any) => {
+                        console.log(res);
+                    })
+                )
+        )
+    );
+
+    pageGuideSize$ = new BehaviorSubject<number>(10);
+    pageGuideNumber$ = new BehaviorSubject<number>(1);
+    guideList$ = combineLatest([
+        this.pageGuideSize$,
+        this.pageGuideNumber$,
+    ]).pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap(() =>
+            this._publicService
+                .listGuides(
+                    parseInt(this.pageGuideNumber$.value.toString()),
+                    parseInt(this.pageGuideSize$.value.toString())
                 )
                 .pipe(
                     tap((res: any) => {

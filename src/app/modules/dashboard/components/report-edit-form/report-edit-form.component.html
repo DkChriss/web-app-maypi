@@ -1,0 +1,169 @@
+<div class="p-6">
+    <h2 mat-dialog-title class="text-center text-2xl font-bold uppercase mb-4">
+        Editar reporte de desaparicion
+    </h2>
+
+    <mat-dialog-content>
+        <form [formGroup]="form.formGroup" (ngSubmit)="formSubmit()" novalidate>
+            <div class="grid grid-cols-1 gap-4 mt-2">
+                <div class="flex w-full">
+                    <!-- Missing -->
+                    <mat-form-field
+                        class="w-full"
+                        *ngIf="missingSelectList$ | async as missingSelectList"
+                    >
+                        <mat-label>Persona desaparecida</mat-label>
+                        <mat-select
+                            #select_1
+                            (openedChange)="onOpenedChange($event, 'select_1')"
+                            placeholder=" Seleccione la persona desaparecida"
+                            formControlName="missing_id"
+                        >
+                            <mat-option
+                                *ngFor="let missing of missing; let i = index"
+                                [value]="missing.id"
+                            >
+                                {{ missing.name }} {{ missing.last_name }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="flex w-full">
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Nombre</mat-label>
+                        <input
+                            matInput
+                            name="name"
+                            formControlName="name"
+                            placeholder="Ingrese el nombre del reportante"
+                            required
+                        />
+                        <mat-error
+                            *ngIf="
+                                Form.name.invalid &&
+                                (Form.name.dirty || Form.name.touched)
+                            "
+                        >
+                            El nombre del reportante es requerido
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Correo Electronico </mat-label>
+                        <input
+                            matInput
+                            type="email"
+                            name="email"
+                            formControlName="email"
+                            placeholder="Ingrese el correo electronico del reportante"
+                            required
+                        />
+                        <mat-error
+                            *ngIf="
+                                Form.email.invalid &&
+                                (Form.email.dirty || Form.email.touched)
+                            "
+                        >
+                            El correo electronico del reportante es requerido
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="flex w-full">
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Celular</mat-label>
+                        <input
+                            matInput
+                            name="phone"
+                            formControlName="phone"
+                            placeholder="Ingrese el Celular del reportante"
+                            required
+                        />
+                        <mat-error
+                            *ngIf="
+                                Form.phone.invalid &&
+                                (Form.phone.dirty || Form.phone.touched)
+                            "
+                        >
+                            El celular del reportante es requerido
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Ubicacion</mat-label>
+                        <input
+                            matInput
+                            type="location"
+                            name="location"
+                            formControlName="location"
+                            placeholder="Ingrese la ubicacion"
+                            required
+                        />
+                        <mat-error
+                            *ngIf="
+                                Form.location.invalid &&
+                                (Form.location.dirty || Form.location.touched)
+                            "
+                        >
+                            La ubicacion es requerido
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="flex w-full">
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Descripcion</mat-label>
+                        <input
+                            matInput
+                            name="description"
+                            formControlName="description"
+                            placeholder="Ingrese una descripcion de la victima"
+                            required
+                        />
+                        <mat-error
+                            *ngIf="
+                                Form.description.invalid &&
+                                (Form.description.dirty ||
+                                    Form.description.touched)
+                            "
+                        >
+                            Ingrese una pequeña descripcion de la persona
+                            desaparecida
+                        </mat-error>
+                    </mat-form-field>
+                    <div class="flex-auto m-2">
+                        <label
+                            for="date"
+                            class="block text-sm font-medium text-[#2E4053]"
+                            >Fecha y Hora del Avistamiento *</label
+                        >
+                        <input
+                            type="datetime-local"
+                            id="date"
+                            formControlName="date"
+                            class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FFC107]"
+                            aria-label="Seleccione fecha y hora del avistamiento"
+                            required
+                        />
+                        <mat-error
+                            *ngIf="
+                                Form.date.invalid &&
+                                (Form.date.dirty || Form.date.touched)
+                            "
+                        >
+                            La fecha y hora en que se vio ultima vez a la
+                            victima
+                        </mat-error>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="flex justify-center">
+        <button
+            mat-flat-button
+            color="primary"
+            (click)="formSubmit()"
+            class="w-full rounded-none"
+        >
+            Registrar
+        </button>
+    </mat-dialog-actions>
+</div>

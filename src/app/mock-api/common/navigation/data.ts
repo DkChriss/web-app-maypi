@@ -113,8 +113,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link: '/apps/search-rescue/emergency',
                 roles: [1, 2],
             },
-
-        ]
+        ],
     },
     {
         id: 'apps.prevention',
@@ -139,7 +138,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link: '/apps/prevention/tracking-codes',
                 roles: [1, 2],
             },
-        ]
+        ],
     },
     {
         id: 'apps.reports',
@@ -188,7 +187,7 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link: '/pages/settings',
                 roles: [1, 2],
             },
-        ]
+        ],
     },
     {
         id: 'apps.configuration',
@@ -197,6 +196,14 @@ export const defaultNavigation: FuseNavigationItem[] = [
         type: 'group',
         icon: 'heroicons_outline:cog-6-tooth',
         children: [
+            {
+                id: 'apps.help-center.home',
+                title: 'Usuarios',
+                type: 'basic',
+                link: '/dashboards/users',
+                roles: [2],
+                exactMatch: true,
+            },
             {
                 id: 'apps.help-center.home',
                 title: 'Categorias',
@@ -252,10 +259,17 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link: '/dashboards/missing',
                 roles: [2],
                 exactMatch: true,
-            }
-        ]
-
-    }
+            },
+            {
+                id: 'apps.help-center.home',
+                title: 'Reporte de solicitudes de desaparecidos',
+                type: 'basic',
+                link: '/dashboards/reports',
+                roles: [2],
+                exactMatch: true,
+            },
+        ],
+    },
 ];
 export const compactNavigation: FuseNavigationItem[] = [
     {
@@ -339,7 +353,6 @@ export const compactNavigation: FuseNavigationItem[] = [
         ],
     },
 
-
     {
         id: 'apps.search-rescue',
         title: 'Busqueda y Rescate',
@@ -371,8 +384,7 @@ export const compactNavigation: FuseNavigationItem[] = [
                 link: '/apps/search-rescue/emergency',
                 roles: [1, 2],
             },
-
-        ]
+        ],
     },
     {
         id: 'apps.prevention',
@@ -397,7 +409,7 @@ export const compactNavigation: FuseNavigationItem[] = [
                 link: '/apps/prevention/tracking-codes',
                 roles: [1, 2],
             },
-        ]
+        ],
     },
     {
         id: 'apps.reports',
@@ -446,8 +458,8 @@ export const compactNavigation: FuseNavigationItem[] = [
                 link: '/pages/settings',
                 roles: [1, 2],
             },
-        ]
-    }
+        ],
+    },
 ];
 export const futuristicNavigation: FuseNavigationItem[] = [
     {
@@ -531,7 +543,6 @@ export const futuristicNavigation: FuseNavigationItem[] = [
         ],
     },
 
-
     {
         id: 'apps.search-rescue',
         title: 'Busqueda y Rescate',
@@ -563,8 +574,7 @@ export const futuristicNavigation: FuseNavigationItem[] = [
                 link: '/apps/search-rescue/emergency',
                 roles: [1, 2],
             },
-
-        ]
+        ],
     },
     {
         id: 'apps.prevention',
@@ -589,7 +599,7 @@ export const futuristicNavigation: FuseNavigationItem[] = [
                 link: '/apps/prevention/tracking-codes',
                 roles: [1, 2],
             },
-        ]
+        ],
     },
     {
         id: 'apps.reports',
@@ -638,8 +648,8 @@ export const futuristicNavigation: FuseNavigationItem[] = [
                 link: '/pages/settings',
                 roles: [1, 2],
             },
-        ]
-    }
+        ],
+    },
 ];
 export const horizontalNavigation: FuseNavigationItem[] = [
     {
@@ -723,7 +733,6 @@ export const horizontalNavigation: FuseNavigationItem[] = [
         ],
     },
 
-
     {
         id: 'apps.search-rescue',
         title: 'Busqueda y Rescate',
@@ -755,8 +764,7 @@ export const horizontalNavigation: FuseNavigationItem[] = [
                 link: '/apps/search-rescue/emergency',
                 roles: [1, 2],
             },
-
-        ]
+        ],
     },
     {
         id: 'apps.prevention',
@@ -781,7 +789,7 @@ export const horizontalNavigation: FuseNavigationItem[] = [
                 link: '/apps/prevention/tracking-codes',
                 roles: [1, 2],
             },
-        ]
+        ],
     },
     {
         id: 'apps.reports',
@@ -830,6 +838,6 @@ export const horizontalNavigation: FuseNavigationItem[] = [
                 link: '/pages/settings',
                 roles: [1, 2],
             },
-        ]
-    }
+        ],
+    },
 ];

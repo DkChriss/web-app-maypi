@@ -1,0 +1,187 @@
+<div class="p-6">
+    <h2 mat-dialog-title class="text-center text-2xl font-bold uppercase mb-4">
+        Registrar nuevo usuario
+    </h2>
+
+    <mat-dialog-content>
+        <form [formGroup]="form.formGroup" (ngSubmit)="formSubmit()" novalidate>
+            <div class="grid grid-cols-1 gap-4 mt-2">
+                <div class="flex w-full">
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Nombre</mat-label>
+                        <input
+                            matInput
+                            name="name"
+                            formControlName="name"
+                            placeholder="Ingrese el nombre del usuario"
+                            required
+                        />
+                        <mat-error
+                            *ngIf="
+                                Form.name.invalid &&
+                                (Form.name.dirty || Form.name.touched)
+                            "
+                        >
+                            El nombre del usuario es requerido
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Apellido</mat-label>
+                        <input
+                            matInput
+                            name="last_name"
+                            formControlName="last_name"
+                            placeholder="Ingrese el apellido del usuario"
+                            required
+                        />
+                        <mat-error
+                            *ngIf="
+                                Form.last_name.invalid &&
+                                (Form.last_name.dirty || Form.last_name.touched)
+                            "
+                        >
+                            El apellido del usuario es requerido
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Segundo apellido</mat-label>
+                        <input
+                            matInput
+                            name="second_surname"
+                            formControlName="second_surname"
+                            placeholder="Ingrese el segundo apellido del usuario"
+                            required
+                        />
+                        <mat-error
+                            *ngIf="
+                                Form.second_surname.invalid &&
+                                (Form.second_surname.dirty ||
+                                    Form.second_surname.touched)
+                            "
+                        >
+                            El segundo apellido del usuario es requerido
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="flex w-full">
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Correo Electronico </mat-label>
+                        <input
+                            matInput
+                            type="email"
+                            name="email"
+                            formControlName="email"
+                            placeholder="Ingrese el correo electronico del usuario"
+                            required
+                        />
+                        <mat-error
+                            *ngIf="
+                                Form.email.invalid &&
+                                (Form.email.dirty || Form.email.touched)
+                            "
+                        >
+                            El correo electronico del usuario es requerido
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Telefono </mat-label>
+                        <input
+                            matInput
+                            name="phone"
+                            formControlName="phone"
+                            placeholder="Ingrese el telefono celular del usuario"
+                            required
+                        />
+                        <mat-error
+                            *ngIf="
+                                Form.phone.invalid &&
+                                (Form.phone.dirty || Form.phone.touched)
+                            "
+                        >
+                            El telefono celular del usuario es requerido
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Contraseña </mat-label>
+                        <input
+                            matInput
+                            type="password"
+                            name="password"
+                            formControlName="password"
+                            placeholder="Ingrese la contraseña del usuario"
+                            required
+                        />
+                        <mat-error
+                            *ngIf="
+                                Form.password.invalid &&
+                                (Form.password.dirty || Form.password.touched)
+                            "
+                        >
+                            La contraseña del usuario es requerido
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="flex w-full">
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Codigo </mat-label>
+                        <input
+                            matInput
+                            name="code"
+                            formControlName="code"
+                            placeholder="Ingrese el codigo del usuario"
+                        />
+                        <mat-error
+                            *ngIf="
+                                Form.code.invalid &&
+                                (Form.code.dirty || Form.code.touched)
+                            "
+                        >
+                            El codigo del usuario es requerido
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="flex-auto m-2">
+                        <mat-label>Token de firebase </mat-label>
+                        <input
+                            matInput
+                            name="token_firebase"
+                            formControlName="token_firebase"
+                            placeholder="Ingrese el token de firebase del usuario"
+                        />
+                        <mat-error
+                            *ngIf="
+                                Form.token_firebase.invalid &&
+                                (Form.token_firebase.dirty ||
+                                    Form.token_firebase.touched)
+                            "
+                        >
+                            El token de firebase del usuario es requerido
+                        </mat-error>
+                    </mat-form-field>
+                    <div class="flex-auto m-2">
+                        <label
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                            >Avatar del usuario</label
+                        >
+                        <input
+                            type="file"
+                            class="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-700"
+                            (change)="onFileChange($event, 'avatar')"
+                            accept="image/jpeg,image/png,image/gif"
+                        />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="flex justify-center">
+        <button
+            mat-flat-button
+            color="primary"
+            (click)="formSubmit()"
+            class="w-full rounded-none"
+        >
+            Registrar
+        </button>
+    </mat-dialog-actions>
+</div>

@@ -75,35 +75,6 @@ export class MissingPageComponent implements OnInit, OnDestroy {
     ];
     configForm: UntypedFormGroup;
     isLoading = true;
-    form = {
-        submitted: false,
-        submitting: false,
-        formGroup: new FormGroup({
-            user_id: new FormControl<number>(null, Validators.required),
-            name: new FormControl<string>('', Validators.required),
-            last_name: new FormControl<string>('', Validators.required),
-            age: new FormControl<number>(null, Validators.required),
-            gender: new FormControl<string>('', Validators.required),
-            description: new FormControl<string>('', Validators.required),
-            birthdate: new FormControl<Date>(null, Validators.required),
-            disappearance_date: new FormControl<Date>(
-                null,
-                Validators.required
-            ),
-            place_of_disappearance: new FormControl<string>(
-                '',
-                Validators.required
-            ),
-            status_missing: new FormControl<StatusMissingEnum>(
-                null,
-                Validators.required
-            ),
-            characteristics: new FormControl<string>('', Validators.required),
-            reporter_name: new FormControl<string>('', Validators.required),
-            reporter_phone: new FormControl<string>('', Validators.required),
-            location: new FormControl<any>(null, Validators.required),
-        }),
-    };
 
     missingTable = {
         reload: new BehaviorSubject<void>(null),

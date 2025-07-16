@@ -1,0 +1,54 @@
+<div class="p-6">
+    <h2 mat-dialog-title class="text-center text-2xl font-bold uppercase mb-4">
+        Asignar roles al usuario
+    </h2>
+
+    <mat-dialog-content>
+        <form [formGroup]="form.formGroup" (ngSubmit)="formSubmit()" novalidate>
+            <div class="grid grid-cols-1 gap-4 mt-2">
+                <div class="flex w-full">
+                    <mat-form-field
+                        appearance="outline"
+                        class="flex-auto m-2"
+                        *ngIf="roleSelectList$ | async as roleSelectList"
+                    >
+                        <mat-label>Roles</mat-label>
+                        <mat-select
+                            #select_1
+                            (openedChange)="onOpenedChange($event, 'select_1')"
+                            placeholder=" Seleccione los roles"
+                            formControlName="roles_ids"
+                            multiple
+                        >
+                            <mat-option
+                                *ngFor="let role of roles; let i = index"
+                                [value]="role.id"
+                            >
+                                {{ role.name }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error
+                            *ngIf="
+                                Form.roles_ids.invalid &&
+                                (Form.roles_ids.dirty || Form.roles_ids.touched)
+                            "
+                        >
+                            Los roles a asignar al usuario son necesarios
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="flex justify-center">
+        <button
+            mat-flat-button
+            color="primary"
+            (click)="formSubmit()"
+            class="w-full rounded-none"
+        >
+            Asignar roles
+        </button>
+    </mat-dialog-actions>
+</div>

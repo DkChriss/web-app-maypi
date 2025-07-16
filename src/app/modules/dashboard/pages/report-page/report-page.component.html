@@ -1,0 +1,154 @@
+<div
+    class="sm:absolute sm:inset-0 flex flex-col flex-auto min-w-0 sm:overflow-hidden bg-card dark:bg-transparent"
+>
+    <!-- Header -->
+    <div
+        class="relative flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between py-8 px-6 md:px-8 border-b"
+    >
+        <!-- Loader -->
+        <div class="absolute inset-x-0 bottom-0" *ngIf="isLoading">
+            <mat-progress-bar [mode]="'indeterminate'"></mat-progress-bar>
+        </div>
+        <!-- Title -->
+        <div class="text-4xl font-extrabold tracking-tight">
+            Reportes de personas desaparecidas
+        </div>
+
+        <!-- Actions -->
+        <div class="flex shrink-0 items-center mt-6 sm:mt-0 sm:ml-4">
+            <!-- Search -->
+            <mat-form-field
+                class="fuse-mat-dense fuse-mat-rounded min-w-64"
+                [subscriptSizing]="'dynamic'"
+            >
+                <mat-icon
+                    class="icon-size-5"
+                    matPrefix
+                    [svgIcon]="'heroicons_solid:magnifying-glass'"
+                ></mat-icon>
+                <input
+                    matInput
+                    (input)="searchBy$.next($event.target.value)"
+                    [autocomplete]="'off'"
+                    [placeholder]="'Buscar Reportes'"
+                />
+            </mat-form-field>
+
+            <!-- Add Device button -->
+            <button
+                class="ml-4"
+                mat-flat-button
+                [color]="'primary'"
+                (click)="store()"
+            >
+                <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                <span class="ml-2 mr-1"
+                    >Registrar reporte de persona desaparecida</span
+                >
+            </button>
+        </div>
+    </div>
+    <!-- Main -->
+    <div class="flex-auto p-6 sm:p-10">
+        <div class="bg-card shadow rounded-lg overflow-hidden">
+            <table mat-table [dataSource]="reportList$ | async" class="w-full">
+                <!-- Name -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>
+                        Nombre del reportante
+                    </th>
+                    <td mat-cell *matCellDef="let report">
+                        {{ report.name }}
+                    </td>
+                </ng-container>
+
+                <!-- Email -->
+                <ng-container matColumnDef="email">
+                    <th mat-header-cell *matHeaderCellDef>
+                        Correo del reportante
+                    </th>
+                    <td mat-cell *matCellDef="let report">
+                        {{ report.email }}
+                    </td>
+                </ng-container>
+
+                <!--Phone -->
+                <ng-container matColumnDef="phone">
+                    <th mat-header-cell *matHeaderCellDef>
+                        Telefono del reportante
+                    </th>
+                    <td mat-cell *matCellDef="let report">
+                        {{ report.phone }}
+                    </td>
+                </ng-container>
+                <!--Location -->
+                <ng-container matColumnDef="location">
+                    <th mat-header-cell *matHeaderCellDef>Ubicacion</th>
+                    <td mat-cell *matCellDef="let report">
+                        {{ report.location }}
+                    </td>
+                </ng-container>
+                <!--Descripcion -->
+                <ng-container matColumnDef="description">
+                    <th mat-header-cell *matHeaderCellDef>Descripcion</th>
+                    <td mat-cell *matCellDef="let report">
+                        {{ report.description }}
+                    </td>
+                </ng-container>
+                <!--Date -->
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                    <td mat-cell *matCellDef="let report">
+                        {{ report.date }}
+                    </td>
+                </ng-container>
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                    <td mat-cell *matCellDef="let report">
+                        <div class="flex space-x-2">
+                            <button mat-icon-button (click)="update(report)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button (click)="delete(report.id)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr
+                    mat-row
+                    *matRowDef="let row; columns: displayedColumns"
+                ></tr>
+            </table>
+
+            <!-- Paginación -->
+            <mat-paginator
+                class="sm:absolute sm:inset-x-0 sm:bottom-0 border-b sm:border-t sm:border-b-0 z-10 bg-gray-50 dark:bg-transparent"
+                [ngClass]="{ 'pointer-events-none': isLoading }"
+                [length]="totalItems"
+                [pageIndex]="pageNumber$.value - 1"
+                [pageSize]="pageSize$.value"
+                [pageSizeOptions]="[5, 10, 25, 100]"
+                [showFirstLastButtons]="true"
+                (page)="onPageChange($event)"
+            >
+            </mat-paginator>
+
+            <!-- Empty state -->
+            <div
+                *ngIf="(reportList$ | async)?.length === 0"
+                class="p-8 text-center"
+            >
+                <p class="text-secondary text-lg">
+                    No hay reporte de personas desaparecidas registradas.
+                    <br />
+                    Haz clic en "Registrar reporte de persona desaparecida" para
+                    comenzar.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

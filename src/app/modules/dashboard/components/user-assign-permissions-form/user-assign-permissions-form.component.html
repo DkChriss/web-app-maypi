@@ -1,0 +1,61 @@
+<div class="p-6">
+    <h2 mat-dialog-title class="text-center text-2xl font-bold uppercase mb-4">
+        Asignar permisos al usuario
+    </h2>
+
+    <mat-dialog-content>
+        <form [formGroup]="form.formGroup" (ngSubmit)="formSubmit()" novalidate>
+            <div class="grid grid-cols-1 gap-4 mt-2">
+                <div class="flex w-full">
+                    <mat-form-field
+                        appearance="outline"
+                        class="flex-auto m-2"
+                        *ngIf="
+                            permissionSelectList$
+                                | async as permissionSelectList
+                        "
+                    >
+                        <mat-label>Permisos</mat-label>
+                        <mat-select
+                            #select_1
+                            (openedChange)="onOpenedChange($event, 'select_1')"
+                            placeholder=" Seleccione los permisos"
+                            formControlName="permissions_ids"
+                            multiple
+                        >
+                            <mat-option
+                                *ngFor="
+                                    let permission of permissions;
+                                    let i = index
+                                "
+                                [value]="permission.id"
+                            >
+                                {{ permission.name }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error
+                            *ngIf="
+                                Form.permissions_ids.invalid &&
+                                (Form.permissions_ids.dirty ||
+                                    Form.permissions_ids.touched)
+                            "
+                        >
+                            Los permisos a asignar al usuario son necesarios
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="flex justify-center">
+        <button
+            mat-flat-button
+            color="primary"
+            (click)="formSubmit()"
+            class="w-full rounded-none"
+        >
+            Asignar permisos
+        </button>
+    </mat-dialog-actions>
+</div>

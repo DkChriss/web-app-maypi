@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "fuse": {
+        "webapp": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
@@ -17,12 +17,10 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
-                        "outputPath": "dist/fuse",
+                        "outputPath": "dist/webapp",
                         "index": "src/index.html",
-                        "main": "src/main.ts", 
-                        "polyfills": [
-                            "zone.js"
-                        ],
+                        "main": "src/main.ts",
+                        "polyfills": ["zone.js"],
                         "tsConfig": "tsconfig.app.json",
                         "inlineStyleLanguage": "scss",
                         "allowedCommonJsDependencies": [
@@ -50,10 +48,7 @@
                             }
                         ],
                         "stylePreprocessorOptions": {
-                            "includePaths": [
-                                "src/@fuse/styles",
-                                "node_modules"
-                            ]
+                            "includePaths": ["src/@fuse/styles", "node_modules"]
                         },
                         "styles": [
                             "src/@fuse/styles/tailwind.scss",
@@ -92,10 +87,10 @@
                             "sourceMap": true,
                             "namedChunks": true,
                             "fileReplacements": [
-                              {
-                                "replace": "src/environments/environment.ts",
-                                "with": "src/environments/environment.development.ts"
-                              }
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.development.ts"
+                                }
                             ]
                         }
                     },
@@ -105,10 +100,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                          "buildTarget": "fuse:build:production"
+                            "buildTarget": "fuse:build:production"
                         },
                         "development": {
-                          "buildTarget": "fuse:build:development"
+                            "buildTarget": "fuse:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -116,16 +111,13 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                      "buildTarget": "fuse:build"
+                        "buildTarget": "fuse:build"
                     }
                 },
                 "test": {
                     "builder": "@angular-devkit/build-angular:karma",
                     "options": {
-                        "polyfills": [
-                            "zone.js",
-                            "zone.js/testing"
-                        ],
+                        "polyfills": ["zone.js", "zone.js/testing"],
                         "tsConfig": "tsconfig.spec.json",
                         "inlineStyleLanguage": "scss",
                         "assets": [
@@ -133,9 +125,7 @@
                             "src/favicon-32x32.png",
                             "src/assets"
                         ],
-                        "styles": [
-                            "src/styles/styles.scss"
-                        ],
+                        "styles": ["src/styles/styles.scss"],
                         "scripts": []
                     }
                 }
@@ -143,6 +133,6 @@
         }
     },
     "cli": {
-      "analytics": "23037b78-2e24-4447-ab5a-915137078a5b"
+        "analytics": "23037b78-2e24-4447-ab5a-915137078a5b"
     }
 }

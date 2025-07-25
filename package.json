@@ -7,7 +7,7 @@
     "private": true,
     "scripts": {
         "ng": "ng",
-        "start": "ng serve webapp --port $PORT",
+        "start": "npm run build && npx serve -s dist/webapp -l $PORT",
         "build": "ng build webapp",
         "watch": "ng build webapp --watch --configuration development",
         "test": "ng test webapp"

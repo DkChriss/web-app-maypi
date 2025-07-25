@@ -7,7 +7,7 @@
     "private": true,
     "scripts": {
         "ng": "ng",
-        "start": "ng serve webapp --host 0.0.0.0 --port $PORT --disable-host-check",
+        "start": "ng serve webapp --port $PORT",
         "build": "ng build webapp",
         "watch": "ng build webapp --watch --configuration development",
         "test": "ng test webapp"

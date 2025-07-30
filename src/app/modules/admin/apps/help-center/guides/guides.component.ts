@@ -2,7 +2,7 @@ import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { HelpCenterService } from 'app/modules/admin/apps/help-center/help-center.service';
 import { GuideCategory } from 'app/modules/admin/apps/help-center/help-center.type';
 import { PublicService } from 'app/modules/landing/home/services/public.service';

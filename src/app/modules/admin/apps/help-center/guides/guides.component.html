@@ -40,6 +40,10 @@
                         >
                             <a
                                 class="mt-3 font-medium hover:underline text-primary-500"
+                                [routerLink]="[
+                                    '/apps/help-center/guides/detail'
+                                ]"
+                                [queryParams]="{ id: guide.id }"
                             >
                                 {{ guide.title }}
                             </a>

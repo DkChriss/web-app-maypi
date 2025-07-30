@@ -1,6 +1,8 @@
 import { NgIf } from '@angular/common';
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import {
+    FormControl,
+    FormGroup,
     FormsModule,
     NgForm,
     ReactiveFormsModule,
@@ -79,7 +81,23 @@ export class AuthSignUpComponent implements OnInit {
         type: 'success',
         message: '',
     };
-    signUpForm: UntypedFormGroup;
+    signUpForm = {
+        submitted: false,
+        submitting: false,
+        formGroup: new FormGroup({
+            code: new FormControl<string>('', Validators.required),
+            name: new FormControl<string>('', Validators.required),
+            last_name: new FormControl<string>('', Validators.required),
+            second_surname: new FormControl<string>('', Validators.required),
+            email: new FormControl<string>('', [
+                Validators.required,
+                Validators.email,
+            ]),
+            password: new FormControl<string>('', [Validators.required]),
+            phone: new FormControl<number>(null, Validators.required),
+            avatar: new FormControl<File>(null),
+        }),
+    };
     showAlert: boolean = false;
     isLoading: boolean = false;
 
@@ -108,28 +126,23 @@ export class AuthSignUpComponent implements OnInit {
     /**
      * On init
      */
-    ngOnInit(): void {
-        // Create the form
-        this.signUpForm = this._formBuilder.group({
-            name: ['', Validators.required],
-            lastname: ['', Validators.required],
-            second_surname: ['', Validators.required],
-            email: ['', [Validators.required, Validators.email]],
-            phone: ['', Validators.required],
-            password: ['', Validators.required],
-        });
-    }
+    ngOnInit(): void {}
 
     // Método para manejar la carga de la imagen
-    onFileChange(event: any): void {
-        const file = event.target.files[0];
-        if (file) {
-            this.image = file;
-            // Asignar el archivo al formulario
-            this.signUpForm.patchValue({
-                image: file,
-            });
+    buildUserStoreFormData(data: any): FormData {
+        const formData = new FormData();
+        formData.append('code', data.code);
+        formData.append('name', data.name);
+        formData.append('last_name', data.last_name);
+        formData.append('second_surname', data.second_surname);
+        formData.append('email', data.email);
+        formData.append('phone', data.phone.toString());
+        formData.append('password', data.password);
+        if (data.avatar) {
+            formData.append('avatar', data.avatar);
         }
+
+        return formData;
     }
 
     // -----------------------------------------------------------------------------------------------------

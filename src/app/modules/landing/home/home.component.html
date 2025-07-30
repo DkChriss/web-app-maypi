@@ -339,6 +339,8 @@
                     <div
                         class="border-2 border-[#F2F2F2] hover:border-[#FFC107] transition-colors rounded-lg p-6"
                         *ngFor="let guide of guideList.data; let i = index"
+                        [routerLink]="['/home/guides/detail']"
+                        [queryParams]="{ id: guide.id }"
                     >
                         <h3 class="text-xl text-[#2E4053] font-bold mb-2">
                             {{ guide.title }}

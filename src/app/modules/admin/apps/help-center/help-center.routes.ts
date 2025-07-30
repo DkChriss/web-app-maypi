@@ -1,5 +1,9 @@
 import { inject } from '@angular/core';
-import { ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
+import {
+    ActivatedRouteSnapshot,
+    RouterStateSnapshot,
+    Routes,
+} from '@angular/router';
 import { HelpCenterFaqsComponent } from './faqs/faqs.component';
 import { HelpCenterGuidesCategoryComponent } from './guides/category/category.component';
 import { HelpCenterGuidesGuideComponent } from './guides/guide/guide.component';
@@ -16,78 +20,54 @@ import { HelpCenterRecInfoDesaparecidosComponent } from './recinfodesaparecidos/
 
 export default [
     {
-        path     : '',
+        path: '',
         component: HelpCenterComponent,
-        resolve  : {
-            faqs: () => inject(HelpCenterService).getFaqsByCategory('most-asked'),
+        resolve: {
+            faqs: () =>
+                inject(HelpCenterService).getFaqsByCategory('most-asked'),
         },
     },
     {
-        path     : 'faqs',
+        path: 'faqs',
         component: HelpCenterFaqsComponent,
-        resolve  : {
+        resolve: {
             faqs: () => inject(HelpCenterService).getAllFaqs(),
         },
     },
     {
-        path    : 'guides',
-        children: [
-            {
-                path     : '',
-                component: HelpCenterGuidesComponent,
-                resolve  : {
-                    guides: () => inject(HelpCenterService).getAllGuides(),
-                },
-            },
-            {
-                path    : ':categorySlug',
-                children: [
-                    {
-                        path     : '',
-                        component: HelpCenterGuidesCategoryComponent,
-                        resolve  : {
-                            guides: (route: ActivatedRouteSnapshot) =>
-                                inject(HelpCenterService).getGuidesByCategory(route.paramMap.get('categorySlug')),
-                        },
-                    },
-                    {
-                        path     : ':guideSlug',
-                        component: HelpCenterGuidesGuideComponent,
-                        resolve  : {
-                            guides: (route: ActivatedRouteSnapshot) =>
-                                inject(HelpCenterService).getGuide(route.parent.paramMap.get('categorySlug'), route.paramMap.get('guideSlug')),
-                        },
-                    },
-                ],
-            },
-        ],
+        path: 'guides',
+        component: HelpCenterGuidesComponent,
     },
     {
-        path     : 'support',
+        path: 'guides/detail',
+        component: HelpCenterGuidesGuideComponent,
+    },
+    {
+        path: 'support',
         component: HelpCenterSupportComponent,
     },
     {
-        path     : 'chatia',
+        path: 'chatia',
         component: HelpCenterChatIAComponent,
     },
     {
-        path     : 'editfaqs',
+        path: 'editfaqs',
         component: HelpCenterEditFaqsComponent,
     },
     {
-        path     : 'editguides',
+        path: 'editguides',
         component: HelpCenterEditGuidesComponent,
     },
     {
-        path     : 'recsupport',
+        path: 'recsupport',
         component: HelpCenterRecSupportComponent,
     },
     {
-        path     : 'recdesaparecidos',
+        path: 'recdesaparecidos',
         component: HelpCenterRecDesaparecidosComponent,
     },
     {
-        path     : 'recinfodesaparecidos',
+        path: 'recinfodesaparecidos',
         component: HelpCenterRecInfoDesaparecidosComponent,
-    }
+    },
 ] as Routes;

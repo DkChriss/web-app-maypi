@@ -1,5 +1,9 @@
-<div class="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0 min-h-screen">
-    <div class="md:flex md:items-center md:justify-end w-full sm:w-auto md:h-screen md:w-1/2 py-8 px-4 sm:p-12 md:p-16 sm:rounded-2xl md:rounded-none sm:shadow md:shadow-none sm:bg-card">
+<div
+    class="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0 min-h-screen"
+>
+    <div
+        class="md:flex md:items-center md:justify-end w-full sm:w-auto md:h-screen md:w-1/2 py-8 px-4 sm:p-12 md:p-16 sm:rounded-2xl md:rounded-none sm:shadow md:shadow-none sm:bg-card"
+    >
         <div class="w-full max-w-[420px] sm:w-[420px] mx-auto sm:mx-0">
             <!-- Botón de regreso -->
             <button
@@ -12,12 +16,18 @@
 
             <!-- Logo y título -->
             <div class="flex items-center gap-2">
-                <img src="assets/images/logo/logo.svg" class="h-10 w-auto" alt="Maypi Logo">
+                <img
+                    src="assets/images/logo/logo.svg"
+                    class="h-10 w-auto"
+                    alt="Maypi Logo"
+                />
                 <span class="text-[#2E4053] text-xl font-bold">Maypi</span>
             </div>
 
             <!-- Título -->
-            <div class="mt-4 text-3xl font-extrabold tracking-tight leading-tight text-[#2E4053]">
+            <div
+                class="mt-4 text-3xl font-extrabold tracking-tight leading-tight text-[#2E4053]"
+            >
                 Registro de Usuario
             </div>
 
@@ -25,7 +35,8 @@
                 <div>¿Ya tienes una cuenta?</div>
                 <a
                     class="ml-1 text-[#808000] hover:underline"
-                    [routerLink]="['/sign-in']">Inicia Sesión
+                    [routerLink]="['/sign-in']"
+                    >Inicia Sesión
                 </a>
             </div>
 
@@ -46,42 +57,56 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Nombres -->
                     <mat-form-field class="w-full" appearance="outline">
-                        <mat-label>Nombres</mat-label>
-                        <input
-                            id="firstName"
-                            matInput
-                            [formControlName]="'firstName'"
-                        />
-                        <mat-icon matPrefix class="mr-2 text-[#2E4053]">person</mat-icon>
-                        <mat-error *ngIf="signUpForm.get('firstName').hasError('required')">
-                            Los nombres son requeridos
+                        <mat-label>Nombre</mat-label>
+                        <input id="name" matInput [formControlName]="'name'" />
+                        <mat-icon matPrefix class="mr-2 text-[#2E4053]"
+                            >person</mat-icon
+                        >
+                        <mat-error
+                            *ngIf="signUpForm.get('name').hasError('required')"
+                        >
+                            El nombre son requeridos
                         </mat-error>
                     </mat-form-field>
 
                     <!-- Apellidos -->
                     <mat-form-field class="w-full" appearance="outline">
-                        <mat-label>Apellidos</mat-label>
+                        <mat-label>Apellido</mat-label>
                         <input
-                            id="lastName"
+                            id="lastname"
                             matInput
-                            [formControlName]="'lastName'"
+                            [formControlName]="'lastname'"
                         />
-                        <mat-icon matPrefix class="mr-2 text-[#2E4053]">person</mat-icon>
-                        <mat-error *ngIf="signUpForm.get('lastName').hasError('required')">
+                        <mat-icon matPrefix class="mr-2 text-[#2E4053]"
+                            >person</mat-icon
+                        >
+                        <mat-error
+                            *ngIf="
+                                signUpForm.get('lastname').hasError('required')
+                            "
+                        >
                             Los apellidos son requeridos
                         </mat-error>
                     </mat-form-field>
 
                     <!-- Usuario -->
                     <mat-form-field class="w-full" appearance="outline">
-                        <mat-label>Usuario</mat-label>
+                        <mat-label>Segundo Apellido</mat-label>
                         <input
-                            id="username"
+                            id="second_surname"
                             matInput
-                            [formControlName]="'username'"
+                            [formControlName]="'second_surname'"
                         />
-                        <mat-icon matPrefix class="mr-2 text-[#2E4053]">account_circle</mat-icon>
-                        <mat-error *ngIf="signUpForm.get('username').hasError('required')">
+                        <mat-icon matPrefix class="mr-2 text-[#2E4053]"
+                            >account_circle</mat-icon
+                        >
+                        <mat-error
+                            *ngIf="
+                                signUpForm
+                                    .get('second_surname')
+                                    .hasError('required')
+                            "
+                        >
                             El nombre de usuario es requerido
                         </mat-error>
                     </mat-form-field>
@@ -94,8 +119,12 @@
                             matInput
                             [formControlName]="'phone'"
                         />
-                        <mat-icon matPrefix class="mr-2 text-[#2E4053]">phone</mat-icon>
-                        <mat-error *ngIf="signUpForm.get('phone').hasError('required')">
+                        <mat-icon matPrefix class="mr-2 text-[#2E4053]"
+                            >phone</mat-icon
+                        >
+                        <mat-error
+                            *ngIf="signUpForm.get('phone').hasError('required')"
+                        >
                             El teléfono es requerido
                         </mat-error>
                     </mat-form-field>
@@ -108,26 +137,18 @@
                             matInput
                             [formControlName]="'email'"
                         />
-                        <mat-icon matPrefix class="mr-2 text-[#2E4053]">email</mat-icon>
-                        <mat-error *ngIf="signUpForm.get('email').hasError('required')">
+                        <mat-icon matPrefix class="mr-2 text-[#2E4053]"
+                            >email</mat-icon
+                        >
+                        <mat-error
+                            *ngIf="signUpForm.get('email').hasError('required')"
+                        >
                             El correo es requerido
                         </mat-error>
-                        <mat-error *ngIf="signUpForm.get('email').hasError('email')">
+                        <mat-error
+                            *ngIf="signUpForm.get('email').hasError('email')"
+                        >
                             Por favor ingrese un correo válido
-                        </mat-error>
-                    </mat-form-field>
-
-                    <!-- Rol (Línea Telefónica) -->
-                    <mat-form-field class="w-full" appearance="outline">
-                        <mat-label>Línea Telefónica</mat-label>
-                        <mat-select [formControlName]="'role'">
-                            <mat-option *ngFor="let role of roles" [value]="role.id">
-                                {{role.name}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-icon matPrefix class="mr-2 text-[#2E4053]">sim_card</mat-icon>
-                        <mat-error *ngIf="signUpForm.get('role').hasError('required')">
-                            Es necesario asignar una línea telefónica
                         </mat-error>
                     </mat-form-field>
 
@@ -141,11 +162,17 @@
                             [formControlName]="'password'"
                             #passwordField
                         />
-                        <mat-icon matPrefix class="mr-2 text-[#2E4053]">lock</mat-icon>
+                        <mat-icon matPrefix class="mr-2 text-[#2E4053]"
+                            >lock</mat-icon
+                        >
                         <button
                             mat-icon-button
                             type="button"
-                            (click)="passwordField.type === 'password' ? passwordField.type = 'text' : passwordField.type = 'password'"
+                            (click)="
+                                passwordField.type === 'password'
+                                    ? (passwordField.type = 'text')
+                                    : (passwordField.type = 'password')
+                            "
                             matSuffix
                         >
                             <mat-icon
@@ -159,23 +186,35 @@
                                 [svgIcon]="'heroicons_solid:eye-slash'"
                             ></mat-icon>
                         </button>
-                        <mat-error *ngIf="signUpForm.get('password').hasError('required')">
+                        <mat-error
+                            *ngIf="
+                                signUpForm.get('password').hasError('required')
+                            "
+                        >
                             La contraseña es requerida
                         </mat-error>
                     </mat-form-field>
 
                     <!-- Imagen -->
                     <div class="flex items-center space-x-2">
-                        <button 
-                            type="button" 
-                            (click)="fileInput.click()" 
+                        <button
+                            type="button"
+                            (click)="fileInput.click()"
                             class="flex items-center px-3 py-2 bg-[#F2F2F2] rounded-md hover:bg-[#E0E0E0] transition-colors"
                         >
-                            <mat-icon class="mr-1 text-[#2E4053]">photo_camera</mat-icon>
+                            <mat-icon class="mr-1 text-[#2E4053]"
+                                >photo_camera</mat-icon
+                            >
                             <span class="text-sm">Foto de perfil</span>
                         </button>
-                        <span class="text-xs text-gray-500 truncate max-w-[150px]" *ngIf="image">{{ image.name }}</span>
-                        <span class="text-xs text-gray-500" *ngIf="!image">Opcional</span>
+                        <span
+                            class="text-xs text-gray-500 truncate max-w-[150px]"
+                            *ngIf="image"
+                            >{{ image.name }}</span
+                        >
+                        <span class="text-xs text-gray-500" *ngIf="!image"
+                            >Opcional</span
+                        >
                         <input
                             #fileInput
                             id="image"
@@ -190,12 +229,15 @@
                 <!-- Botón de envío -->
                 <button
                     class="w-full mt-6 py-3 px-4 rounded-md text-[#2E4053] font-medium transition-all duration-300 ease-in-out transform hover:scale-105"
-                    style="background-color: #FFC107;"
+                    style="background-color: #ffc107"
                     mat-flat-button
                     [disabled]="signUpForm.disabled"
                     (click)="signUp()"
                 >
-                    <span *ngIf="!signUpForm.disabled" class="flex items-center justify-center">
+                    <span
+                        *ngIf="!signUpForm.disabled"
+                        class="flex items-center justify-center"
+                    >
                         <mat-icon class="mr-2">person_add</mat-icon>
                         Crear nuevo Usuario
                     </span>
@@ -210,7 +252,7 @@
     </div>
     <div
         class="relative hidden md:flex flex-auto items-center justify-center w-1/2 h-screen p-16 lg:px-28 overflow-hidden"
-        style="background-color: #2E4053;"
+        style="background-color: #2e4053"
     >
         <!-- Fondo - @formatter:off -->
         <!-- Anillos -->
@@ -264,11 +306,7 @@
                     ></rect>
                 </pattern>
             </defs>
-            <rect
-                width="220"
-                height="192"
-                fill="url(#pattern-circles)"
-            ></rect>
+            <rect width="220" height="192" fill="url(#pattern-circles)"></rect>
         </svg>
         <!-- @formatter:on -->
         <!-- Contenido -->
@@ -279,22 +317,39 @@
             </div>
             <div class="mt-6 text-lg tracking-tight leading-6 text-white/70">
                 Ayúdanos a encontrar personas desaparecidas en Bolivia.
-                Regístrate para formar parte de nuestra comunidad y contribuir a reunir familias.
+                Regístrate para formar parte de nuestra comunidad y contribuir a
+                reunir familias.
             </div>
             <div class="mt-8 bg-white/10 p-6 rounded-lg backdrop-blur-sm">
-                <h3 class="text-[#FFC107] text-xl font-bold mb-3">¿Por qué registrarse?</h3>
+                <h3 class="text-[#FFC107] text-xl font-bold mb-3">
+                    ¿Por qué registrarse?
+                </h3>
                 <ul class="space-y-2">
                     <li class="flex items-start">
-                        <mat-icon class="text-[#FFC107] mr-2">check_circle</mat-icon>
-                        <span class="text-white/90">Reportar desapariciones de manera rápida y efectiva</span>
+                        <mat-icon class="text-[#FFC107] mr-2"
+                            >check_circle</mat-icon
+                        >
+                        <span class="text-white/90"
+                            >Reportar desapariciones de manera rápida y
+                            efectiva</span
+                        >
                     </li>
                     <li class="flex items-start">
-                        <mat-icon class="text-[#FFC107] mr-2">check_circle</mat-icon>
-                        <span class="text-white/90">Recibir alertas sobre casos en tu zona</span>
+                        <mat-icon class="text-[#FFC107] mr-2"
+                            >check_circle</mat-icon
+                        >
+                        <span class="text-white/90"
+                            >Recibir alertas sobre casos en tu zona</span
+                        >
                     </li>
                     <li class="flex items-start">
-                        <mat-icon class="text-[#FFC107] mr-2">check_circle</mat-icon>
-                        <span class="text-white/90">Colaborar con la comunidad para encontrar personas</span>
+                        <mat-icon class="text-[#FFC107] mr-2"
+                            >check_circle</mat-icon
+                        >
+                        <span class="text-white/90"
+                            >Colaborar con la comunidad para encontrar
+                            personas</span
+                        >
                     </li>
                 </ul>
             </div>

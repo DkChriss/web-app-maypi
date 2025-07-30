@@ -105,4 +105,11 @@ export class PublicService {
             `${environment.baseUrl}/public/guides/${id}`
         );
     }
+
+    storeUser(newUser: any) {
+        return this._httpClient.post(
+            `${environment.baseUrl}/public/register-user`,
+            newUser
+        );
+    }
 }

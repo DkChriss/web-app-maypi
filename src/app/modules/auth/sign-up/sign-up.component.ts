@@ -1,6 +1,13 @@
 import { NgIf } from '@angular/common';
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormsModule, NgForm, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+    FormsModule,
+    NgForm,
+    ReactiveFormsModule,
+    UntypedFormBuilder,
+    UntypedFormGroup,
+    Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,24 +21,28 @@ import { AuthService } from 'app/core/auth/auth.service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { PublicService } from 'app/modules/landing/home/services/public.service';
 
 @Component({
-    selector     : 'auth-sign-up',
-    templateUrl  : './sign-up.component.html',
+    selector: 'auth-sign-up',
+    templateUrl: './sign-up.component.html',
     encapsulation: ViewEncapsulation.None,
-    animations   : [
+    animations: [
         fuseAnimations,
         trigger('fadeIn', [
             transition(':enter', [
                 style({ opacity: 0 }),
-                animate('600ms ease-in', style({ opacity: 1 }))
-            ])
+                animate('600ms ease-in', style({ opacity: 1 })),
+            ]),
         ]),
         trigger('slideIn', [
             transition(':enter', [
                 style({ transform: 'translateY(20px)', opacity: 0 }),
-                animate('400ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
-            ])
+                animate(
+                    '400ms ease-out',
+                    style({ transform: 'translateY(0)', opacity: 1 })
+                ),
+            ]),
         ]),
         trigger('shake', [
             transition('* => error', [
@@ -40,33 +51,32 @@ import { trigger, transition, style, animate } from '@angular/animations';
                 animate('100ms', style({ transform: 'translateX(10px)' })),
                 animate('100ms', style({ transform: 'translateX(-10px)' })),
                 animate('100ms', style({ transform: 'translateX(10px)' })),
-                animate('100ms', style({ transform: 'translateX(0)' }))
-            ])
-        ])
+                animate('100ms', style({ transform: 'translateX(0)' })),
+            ]),
+        ]),
     ],
-    standalone   : true,
-    imports      : [
-        RouterLink, 
-        NgIf, 
-        FuseAlertComponent, 
-        FormsModule, 
-        ReactiveFormsModule, 
-        MatFormFieldModule, 
-        MatInputModule, 
-        MatButtonModule, 
-        MatIconModule, 
-        MatCheckboxModule, 
-        MatProgressSpinnerModule, 
-        MatSelectModule, 
-        MatOptionModule
+    standalone: true,
+    imports: [
+        RouterLink,
+        NgIf,
+        FuseAlertComponent,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCheckboxModule,
+        MatProgressSpinnerModule,
+        MatSelectModule,
+        MatOptionModule,
     ],
 })
-export class AuthSignUpComponent implements OnInit
-{
+export class AuthSignUpComponent implements OnInit {
     @ViewChild('signUpNgForm') signUpNgForm: NgForm;
 
     alert: { type: FuseAlertType; message: string } = {
-        type   : 'success',
+        type: 'success',
         message: '',
     };
     signUpForm: UntypedFormGroup;
@@ -77,7 +87,7 @@ export class AuthSignUpComponent implements OnInit
     roles = [
         { id: 1, name: 'Entel' },
         { id: 2, name: 'Viva' },
-        { id: 3, name: 'Tigo' }
+        { id: 3, name: 'Tigo' },
     ];
     image: File | null = null;
 
@@ -88,9 +98,8 @@ export class AuthSignUpComponent implements OnInit
         private _authService: AuthService,
         private _formBuilder: UntypedFormBuilder,
         private _router: Router,
-    )
-    {
-    }
+        private _publicService: PublicService
+    ) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -99,18 +108,15 @@ export class AuthSignUpComponent implements OnInit
     /**
      * On init
      */
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
         // Create the form
         this.signUpForm = this._formBuilder.group({
-            firstName : ['', Validators.required],
-            lastName  : ['', Validators.required],
-            username  : ['', Validators.required],
-            email     : ['', [Validators.required, Validators.email]],
-            phone     : ['', Validators.required],
-            password  : ['', Validators.required],
-            role      : ['', Validators.required],
-            image     : [null],  // Campo de imagen ya no tiene validación
+            name: ['', Validators.required],
+            lastname: ['', Validators.required],
+            second_surname: ['', Validators.required],
+            email: ['', [Validators.required, Validators.email]],
+            phone: ['', Validators.required],
+            password: ['', Validators.required],
         });
     }
 
@@ -133,13 +139,11 @@ export class AuthSignUpComponent implements OnInit
     /**
      * Sign up
      */
-    signUp(): void
-    {
+    signUp(): void {
         // Do nothing if the form is invalid
-        if (this.signUpForm.invalid)
-        {
+        if (this.signUpForm.invalid) {
             // Marcar todos los campos como tocados para mostrar errores
-            Object.keys(this.signUpForm.controls).forEach(key => {
+            Object.keys(this.signUpForm.controls).forEach((key) => {
                 const control = this.signUpForm.get(key);
                 control.markAsTouched();
             });
@@ -154,31 +158,29 @@ export class AuthSignUpComponent implements OnInit
         this.showAlert = false;
 
         // Sign up
-        this._authService.signUp(this.signUpForm.value)
-            .subscribe(
-                (response) =>
-                {
-                    // Navigate to the confirmation required page
-                    this._router.navigateByUrl('/confirmation-required');
-                },
-                (response) =>
-                {
-                    // Re-enable the form
-                    this.signUpForm.enable();
-                    this.isLoading = false;
+        this._authService.signUp(this.signUpForm.value).subscribe(
+            (response) => {
+                // Navigate to the confirmation required page
+                this._router.navigateByUrl('/confirmation-required');
+            },
+            (response) => {
+                // Re-enable the form
+                this.signUpForm.enable();
+                this.isLoading = false;
 
-                    // Reset the form
-                    this.signUpNgForm.resetForm();
+                // Reset the form
+                this.signUpNgForm.resetForm();
 
-                    // Set the alert
-                    this.alert = {
-                        type   : 'error',
-                        message: 'Ha ocurrido un error, por favor intente nuevamente.',
-                    };
+                // Set the alert
+                this.alert = {
+                    type: 'error',
+                    message:
+                        'Ha ocurrido un error, por favor intente nuevamente.',
+                };
 
-                    // Show the alert
-                    this.showAlert = true;
-                },
-            );
+                // Show the alert
+                this.showAlert = true;
+            }
+        );
     }
 }

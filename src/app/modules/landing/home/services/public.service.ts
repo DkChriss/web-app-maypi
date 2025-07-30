@@ -99,4 +99,10 @@ export class PublicService {
             contactSupportStore
         );
     }
+
+    showGuide(id: number) {
+        return this._httpClient.get(
+            `${environment.baseUrl}/public/guides/${id}`
+        );
+    }
 }

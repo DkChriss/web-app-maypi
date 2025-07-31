@@ -1,6 +1,15 @@
 import { NgIf } from '@angular/common';
 import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormsModule, NgForm, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import {
+    FormControl,
+    FormGroup,
+    FormsModule,
+    NgForm,
+    ReactiveFormsModule,
+    UntypedFormBuilder,
+    UntypedFormGroup,
+    Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,24 +23,28 @@ import { AuthService } from 'app/core/auth/auth.service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { PublicService } from 'app/modules/landing/home/services/public.service';
 
 @Component({
-    selector     : 'auth-sign-up',
-    templateUrl  : './sign-up.component.html',
+    selector: 'auth-sign-up',
+    templateUrl: './sign-up.component.html',
     encapsulation: ViewEncapsulation.None,
-    animations   : [
+    animations: [
         fuseAnimations,
         trigger('fadeIn', [
             transition(':enter', [
                 style({ opacity: 0 }),
-                animate('600ms ease-in', style({ opacity: 1 }))
-            ])
+                animate('600ms ease-in', style({ opacity: 1 })),
+            ]),
         ]),
         trigger('slideIn', [
             transition(':enter', [
                 style({ transform: 'translateY(20px)', opacity: 0 }),
-                animate('400ms ease-out', style({ transform: 'translateY(0)', opacity: 1 }))
-            ])
+                animate(
+                    '400ms ease-out',
+                    style({ transform: 'translateY(0)', opacity: 1 })
+                ),
+            ]),
         ]),
         trigger('shake', [
             transition('* => error', [
@@ -40,36 +53,61 @@ import { trigger, transition, style, animate } from '@angular/animations';
                 animate('100ms', style({ transform: 'translateX(10px)' })),
                 animate('100ms', style({ transform: 'translateX(-10px)' })),
                 animate('100ms', style({ transform: 'translateX(10px)' })),
-                animate('100ms', style({ transform: 'translateX(0)' }))
-            ])
-        ])
+                animate('100ms', style({ transform: 'translateX(0)' })),
+            ]),
+        ]),
     ],
-    standalone   : true,
-    imports      : [
-        RouterLink, 
-        NgIf, 
-        FuseAlertComponent, 
-        FormsModule, 
-        ReactiveFormsModule, 
-        MatFormFieldModule, 
-        MatInputModule, 
-        MatButtonModule, 
-        MatIconModule, 
-        MatCheckboxModule, 
-        MatProgressSpinnerModule, 
-        MatSelectModule, 
-        MatOptionModule
+    standalone: true,
+    imports: [
+        RouterLink,
+        NgIf,
+        FuseAlertComponent,
+        FormsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MatCheckboxModule,
+        MatProgressSpinnerModule,
+        MatSelectModule,
+        MatOptionModule,
     ],
 })
-export class AuthSignUpComponent implements OnInit
-{
+export class AuthSignUpComponent implements OnInit {
     @ViewChild('signUpNgForm') signUpNgForm: NgForm;
 
     alert: { type: FuseAlertType; message: string } = {
-        type   : 'success',
+        type: 'success',
         message: '',
     };
-    signUpForm: UntypedFormGroup;
+    signUpForm = {
+        submitted: false,
+        submitting: false,
+        formGroup: new FormGroup({
+            code: new FormControl<string>('', Validators.required),
+            name: new FormControl<string>('', Validators.required),
+            last_name: new FormControl<string>('', Validators.required),
+            second_surname: new FormControl<string>('', Validators.required),
+            email: new FormControl<string>('', [
+                Validators.required,
+                Validators.email,
+            ]),
+            password: new FormControl<string>('', [Validators.required]),
+            phone: new FormControl<number>(null, Validators.required),
+            avatar: new FormControl<File>(null),
+        }),
+    };
+    get Form() {
+        return this.signUpForm.formGroup.controls;
+    }
+
+    onFileChange(event: Event, field: string) {
+        const input = event.target as HTMLInputElement;
+        if (input.files && input.files.length > 0) {
+            this.signUpForm.formGroup.patchValue({ [field]: input.files[0] });
+        }
+    }
     showAlert: boolean = false;
     isLoading: boolean = false;
 
@@ -77,7 +115,7 @@ export class AuthSignUpComponent implements OnInit
     roles = [
         { id: 1, name: 'Entel' },
         { id: 2, name: 'Viva' },
-        { id: 3, name: 'Tigo' }
+        { id: 3, name: 'Tigo' },
     ];
     image: File | null = null;
 
@@ -88,9 +126,8 @@ export class AuthSignUpComponent implements OnInit
         private _authService: AuthService,
         private _formBuilder: UntypedFormBuilder,
         private _router: Router,
-    )
-    {
-    }
+        private _publicService: PublicService
+    ) {}
 
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
@@ -99,31 +136,23 @@ export class AuthSignUpComponent implements OnInit
     /**
      * On init
      */
-    ngOnInit(): void
-    {
-        // Create the form
-        this.signUpForm = this._formBuilder.group({
-            firstName : ['', Validators.required],
-            lastName  : ['', Validators.required],
-            username  : ['', Validators.required],
-            email     : ['', [Validators.required, Validators.email]],
-            phone     : ['', Validators.required],
-            password  : ['', Validators.required],
-            role      : ['', Validators.required],
-            image     : [null],  // Campo de imagen ya no tiene validación
-        });
-    }
+    ngOnInit(): void {}
 
     // Método para manejar la carga de la imagen
-    onFileChange(event: any): void {
-        const file = event.target.files[0];
-        if (file) {
-            this.image = file;
-            // Asignar el archivo al formulario
-            this.signUpForm.patchValue({
-                image: file,
-            });
+    buildUserStoreFormData(data: any): FormData {
+        const formData = new FormData();
+        formData.append('code', data.code);
+        formData.append('name', data.name);
+        formData.append('last_name', data.last_name);
+        formData.append('second_surname', data.second_surname);
+        formData.append('email', data.email);
+        formData.append('phone', data.phone.toString());
+        formData.append('password', data.password);
+        if (data.avatar) {
+            formData.append('avatar', data.avatar);
         }
+
+        return formData;
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -133,13 +162,26 @@ export class AuthSignUpComponent implements OnInit
     /**
      * Sign up
      */
-    signUp(): void
-    {
-        // Do nothing if the form is invalid
-        if (this.signUpForm.invalid)
-        {
+    formSubmit(): void {
+        this.signUpForm.submitted = true;
+        console.log(this.signUpForm.formGroup.valid);
+        if (this.signUpForm.formGroup.valid) {
+            this.signUpForm.submitting = true;
+            let newUser: any = this.signUpForm.formGroup.getRawValue();
+            let newUserFormData: FormData =
+                this.buildUserStoreFormData(newUser);
+            this._publicService.storeUser(newUserFormData).subscribe({
+                next: (res: any) =>
+                    this._router.navigateByUrl('/confirmation-required'),
+                error: (error) => console.log(error),
+            });
+        }
+    }
+    signUp(): void {
+        /*// Do nothing if the form is invalid
+        if (this.signUpForm.invalid) {
             // Marcar todos los campos como tocados para mostrar errores
-            Object.keys(this.signUpForm.controls).forEach(key => {
+            Object.keys(this.signUpForm.controls).forEach((key) => {
                 const control = this.signUpForm.get(key);
                 control.markAsTouched();
             });
@@ -151,34 +193,31 @@ export class AuthSignUpComponent implements OnInit
         this.isLoading = true;
 
         // Hide the alert
-        this.showAlert = false;
-
+        this.showAlert = false;*/
         // Sign up
-        this._authService.signUp(this.signUpForm.value)
-            .subscribe(
-                (response) =>
-                {
-                    // Navigate to the confirmation required page
-                    this._router.navigateByUrl('/confirmation-required');
-                },
-                (response) =>
-                {
-                    // Re-enable the form
-                    this.signUpForm.enable();
-                    this.isLoading = false;
+        /*this._authService.signUp(this.signUpForm.value).subscribe(
+            (response) => {
+                // Navigate to the confirmation required page
+                this._router.navigateByUrl('/confirmation-required');
+            },
+            (response) => {
+                // Re-enable the form
+                this.signUpForm.enable();
+                this.isLoading = false;
 
-                    // Reset the form
-                    this.signUpNgForm.resetForm();
+                // Reset the form
+                this.signUpNgForm.resetForm();
 
-                    // Set the alert
-                    this.alert = {
-                        type   : 'error',
-                        message: 'Ha ocurrido un error, por favor intente nuevamente.',
-                    };
+                // Set the alert
+                this.alert = {
+                    type: 'error',
+                    message:
+                        'Ha ocurrido un error, por favor intente nuevamente.',
+                };
 
-                    // Show the alert
-                    this.showAlert = true;
-                },
-            );
+                // Show the alert
+                this.showAlert = true;
+            }
+        );*/
     }
 }

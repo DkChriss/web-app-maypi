@@ -53,8 +53,29 @@
             </fuse-alert>
 
             <!-- Formulario de registro - Diseño de 2 columnas -->
-            <form class="mt-4" [formGroup]="signUpForm" #signUpNgForm="ngForm">
+            <form
+                class="mt-4"
+                [formGroup]="signUpForm.formGroup"
+                (ngSubmit)="formSubmit()"
+                novalidate
+            >
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Code -->
+                    <mat-form-field class="w-full" appearance="outline">
+                        <mat-label>Codigo</mat-label>
+                        <input id="code" matInput [formControlName]="'code'" />
+                        <mat-icon matPrefix class="mr-2 text-[#2E4053]"
+                            >person</mat-icon
+                        >
+                        <mat-error
+                            *ngIf="
+                                Form.code.invalid &&
+                                (Form.code.dirty || Form.code.touched)
+                            "
+                        >
+                            El codigo es requerido
+                        </mat-error>
+                    </mat-form-field>
                     <!-- Nombres -->
                     <mat-form-field class="w-full" appearance="outline">
                         <mat-label>Nombre</mat-label>
@@ -63,7 +84,10 @@
                             >person</mat-icon
                         >
                         <mat-error
-                            *ngIf="signUpForm.get('name').hasError('required')"
+                            *ngIf="
+                                Form.name.invalid &&
+                                (Form.name.dirty || Form.name.touched)
+                            "
                         >
                             El nombre son requeridos
                         </mat-error>
@@ -73,16 +97,17 @@
                     <mat-form-field class="w-full" appearance="outline">
                         <mat-label>Apellido</mat-label>
                         <input
-                            id="lastname"
+                            id="last_name"
                             matInput
-                            [formControlName]="'lastname'"
+                            [formControlName]="'last_name'"
                         />
                         <mat-icon matPrefix class="mr-2 text-[#2E4053]"
                             >person</mat-icon
                         >
                         <mat-error
                             *ngIf="
-                                signUpForm.get('lastname').hasError('required')
+                                Form.last_name.invalid &&
+                                (Form.last_name.dirty || Form.last_name.touched)
                             "
                         >
                             Los apellidos son requeridos
@@ -102,9 +127,9 @@
                         >
                         <mat-error
                             *ngIf="
-                                signUpForm
-                                    .get('second_surname')
-                                    .hasError('required')
+                                Form.second_surname.invalid &&
+                                (Form.second_surname.dirty ||
+                                    Form.second_surname.touched)
                             "
                         >
                             El nombre de usuario es requerido
@@ -123,7 +148,10 @@
                             >phone</mat-icon
                         >
                         <mat-error
-                            *ngIf="signUpForm.get('phone').hasError('required')"
+                            *ngIf="
+                                Form.phone.invalid &&
+                                (Form.phone.dirty || Form.phone.touched)
+                            "
                         >
                             El teléfono es requerido
                         </mat-error>
@@ -141,12 +169,18 @@
                             >email</mat-icon
                         >
                         <mat-error
-                            *ngIf="signUpForm.get('email').hasError('required')"
+                            *ngIf="
+                                Form.email.invalid &&
+                                (Form.email.dirty || Form.email.touched)
+                            "
                         >
                             El correo es requerido
                         </mat-error>
                         <mat-error
-                            *ngIf="signUpForm.get('email').hasError('email')"
+                            *ngIf="
+                                Form.email.invalid &&
+                                (Form.email.dirty || Form.email.touched)
+                            "
                         >
                             Por favor ingrese un correo válido
                         </mat-error>
@@ -188,7 +222,8 @@
                         </button>
                         <mat-error
                             *ngIf="
-                                signUpForm.get('password').hasError('required')
+                                Form.password.invalid &&
+                                (Form.password.dirty || Form.password.touched)
                             "
                         >
                             La contraseña es requerida
@@ -196,32 +231,16 @@
                     </mat-form-field>
 
                     <!-- Imagen -->
-                    <div class="flex items-center space-x-2">
-                        <button
-                            type="button"
-                            (click)="fileInput.click()"
-                            class="flex items-center px-3 py-2 bg-[#F2F2F2] rounded-md hover:bg-[#E0E0E0] transition-colors"
-                        >
-                            <mat-icon class="mr-1 text-[#2E4053]"
-                                >photo_camera</mat-icon
-                            >
-                            <span class="text-sm">Foto de perfil</span>
-                        </button>
-                        <span
-                            class="text-xs text-gray-500 truncate max-w-[150px]"
-                            *ngIf="image"
-                            >{{ image.name }}</span
-                        >
-                        <span class="text-xs text-gray-500" *ngIf="!image"
-                            >Opcional</span
+                    <div class="flex-auto m-2">
+                        <label
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                            >Avatar del usuario</label
                         >
                         <input
-                            #fileInput
-                            id="image"
                             type="file"
-                            accept="image/*"
-                            class="hidden"
-                            (change)="onFileChange($event)"
+                            class="w-full px-3 py-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-700"
+                            (change)="onFileChange($event, 'avatar')"
+                            accept="image/jpeg,image/png,image/gif"
                         />
                     </div>
                 </div>
@@ -231,18 +250,18 @@
                     class="w-full mt-6 py-3 px-4 rounded-md text-[#2E4053] font-medium transition-all duration-300 ease-in-out transform hover:scale-105"
                     style="background-color: #ffc107"
                     mat-flat-button
-                    [disabled]="signUpForm.disabled"
-                    (click)="signUp()"
+                    [disabled]="signUpForm.formGroup.disabled"
+                    (click)="formSubmit()"
                 >
                     <span
-                        *ngIf="!signUpForm.disabled"
+                        *ngIf="!signUpForm.formGroup.disabled"
                         class="flex items-center justify-center"
                     >
                         <mat-icon class="mr-2">person_add</mat-icon>
                         Crear nuevo Usuario
                     </span>
                     <mat-progress-spinner
-                        *ngIf="signUpForm.disabled"
+                        *ngIf="signUpForm.formGroup.disabled"
                         [diameter]="24"
                         [mode]="'indeterminate'"
                     ></mat-progress-spinner>

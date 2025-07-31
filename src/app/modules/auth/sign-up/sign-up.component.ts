@@ -98,6 +98,16 @@ export class AuthSignUpComponent implements OnInit {
             avatar: new FormControl<File>(null),
         }),
     };
+    get Form() {
+        return this.signUpForm.formGroup.controls;
+    }
+
+    onFileChange(event: Event, field: string) {
+        const input = event.target as HTMLInputElement;
+        if (input.files && input.files.length > 0) {
+            this.signUpForm.formGroup.patchValue({ [field]: input.files[0] });
+        }
+    }
     showAlert: boolean = false;
     isLoading: boolean = false;
 
@@ -152,8 +162,23 @@ export class AuthSignUpComponent implements OnInit {
     /**
      * Sign up
      */
+    formSubmit(): void {
+        this.signUpForm.submitted = true;
+        console.log(this.signUpForm.formGroup.valid);
+        if (this.signUpForm.formGroup.valid) {
+            this.signUpForm.submitting = true;
+            let newUser: any = this.signUpForm.formGroup.getRawValue();
+            let newUserFormData: FormData =
+                this.buildUserStoreFormData(newUser);
+            this._publicService.storeUser(newUserFormData).subscribe({
+                next: (res: any) =>
+                    this._router.navigateByUrl('/confirmation-required'),
+                error: (error) => console.log(error),
+            });
+        }
+    }
     signUp(): void {
-        // Do nothing if the form is invalid
+        /*// Do nothing if the form is invalid
         if (this.signUpForm.invalid) {
             // Marcar todos los campos como tocados para mostrar errores
             Object.keys(this.signUpForm.controls).forEach((key) => {
@@ -168,10 +193,9 @@ export class AuthSignUpComponent implements OnInit {
         this.isLoading = true;
 
         // Hide the alert
-        this.showAlert = false;
-
+        this.showAlert = false;*/
         // Sign up
-        this._authService.signUp(this.signUpForm.value).subscribe(
+        /*this._authService.signUp(this.signUpForm.value).subscribe(
             (response) => {
                 // Navigate to the confirmation required page
                 this._router.navigateByUrl('/confirmation-required');
@@ -194,6 +218,6 @@ export class AuthSignUpComponent implements OnInit {
                 // Show the alert
                 this.showAlert = true;
             }
-        );
+        );*/
     }
 }
